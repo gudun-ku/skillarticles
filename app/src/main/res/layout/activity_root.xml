@@ -53,16 +53,18 @@
         android:elevation="8dp"
         android:layout_marginBottom="8dp"
         app:layout_dodgeInsetEdges="bottom"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <ru.skillbranch.skillarticles.ui.custom.Bottombar
         android:id="@+id/bottombar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
         android:theme="@style/ArticleBarsTheme"
         android:elevation="4dp"
-
+        app:layout_insetEdge="bottom"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
