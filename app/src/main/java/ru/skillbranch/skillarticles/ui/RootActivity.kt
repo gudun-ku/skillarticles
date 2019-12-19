@@ -34,14 +34,9 @@ class RootActivity : AppCompatActivity() {
             renderUi(it)
         }
 
-        /*
-        btn_like.setOnClickListener {
-            Snackbar.make(coordinator_container,"test", Snackbar.LENGTH_LONG)
-                .setAnchorView(bottombar)
-                .show()
+        viewModel.observeNotifications(this) {
+            renderNotification(it)
         }
-         */
-
     }
 
     private fun renderUi(data:ArticleState) {
@@ -78,7 +73,30 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun renderNotification(notify: Notify) {
-        //TODO
+        val snackbar = Snackbar.make(coordinator_container,notify.message, Snackbar.LENGTH_LONG)
+            .setAnchorView(bottombar)
+
+        when(notify) {
+            is Notify.TextMessage -> { /* nothing */}
+            is Notify.ActionMessage -> {
+                snackbar.setActionTextColor(getColor(R.color.color_accent_dark))
+                snackbar.setAction(notify.actionLabel) {
+                    notify.actionHandler?.invoke()
+                }
+            }
+            is Notify.ErrorMessage -> {
+                with(snackbar) {
+                    setBackgroundTint(getColor(R.color.design_default_color_error))
+                    setTextColor(getColor(android.R.color.white))
+                    setActionTextColor(getColor(android.R.color.white))
+                    setAction(notify.errLabel){
+                        notify.errHandler?.invoke()
+                    }
+                }
+            }
+        }
+
+        snackbar.show()
     }
 
     private fun setupToolbar() {

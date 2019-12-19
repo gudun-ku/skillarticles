@@ -56,7 +56,7 @@ abstract class BaseViewModel<T>(initState: T) : ViewModel() {
 
     /***
      * более компактная форма записи observe() метода LiveData вызывает лямбда выражение обработчик
-     * только в том случае если уведомление не было уже обработанно ранее,
+     * только в том случае если уведомление не было уже обработано ранее,
      * реализует данное поведение с помощью EventObserver
      */
     fun observeNotifications(owner: LifecycleOwner, onNotify: (notification: Notify) -> Unit) {

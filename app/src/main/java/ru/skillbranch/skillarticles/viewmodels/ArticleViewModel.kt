@@ -5,6 +5,7 @@ import ru.skillbranch.skillarticles.data.ArticleData
 import ru.skillbranch.skillarticles.data.ArticlePersonalInfo
 import ru.skillbranch.skillarticles.data.repositories.ArticleRepository
 import ru.skillbranch.skillarticles.extensions.data.toAppSettings
+import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
 
 class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleState>( ArticleState()) {
@@ -63,6 +64,11 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
         return repository.loadArticlePersonalInfo(articleId)
     }
 
+    // session state
+    fun handleToggleMenu() {
+        updateState { it.copy(isShowMenu = !it.isShowMenu) }
+    }
+
     // app settings
     fun handleNightMode() {
         val settings = currentState.toAppSettings()
@@ -82,19 +88,28 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     }
 
     fun handleLike() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val toggleLike = {
+            val info = currentState.toArticlePersonalInfo()
+            repository.updateArticlePersonalInfo(info.copy(isLike = !info.isLike))
+        }
+
+        toggleLike()
+
+        val msg = if(currentState.isLike) Notify.TextMessage("Mark is liked")
+        else {
+            Notify.ActionMessage(
+                "Don't like it anymore",    //message
+                "No, still like it",    //action label
+                toggleLike                       //lambda
+            )
+        }
+        notify(msg)
     }
-
-    // session state
-    fun handleToggleMenu() {
-        updateState { it.copy(isShowMenu = !it.isShowMenu) }
-    }
-
-
 
     // not implemented
     fun handleShare() {
-
+        val msg = "Share is not implemented"
+        notify(Notify.ErrorMessage(msg,"OK",null))
     }
 
 }
