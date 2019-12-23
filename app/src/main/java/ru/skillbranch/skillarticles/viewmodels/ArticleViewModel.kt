@@ -10,6 +10,7 @@ import ru.skillbranch.skillarticles.extensions.format
 
 class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleState>( ArticleState()) {
     private val repository = ArticleRepository
+    private var menuIsShown:Boolean = false
 
     init {
         // subscribe on mutable data
@@ -66,7 +67,9 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
 
     // session state
     fun handleToggleMenu() {
-        updateState { it.copy(isShowMenu = !it.isShowMenu) }
+        updateState { state ->
+            state.copy(isShowMenu = !state.isShowMenu).also { menuIsShown = !state.isShowMenu }
+        }
     }
 
     // app settings
@@ -84,7 +87,11 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     }
 
     fun handleBookmark() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val toggleBookmark = {
+            val info = currentState.toArticlePersonalInfo()
+            repository.updateArticlePersonalInfo(info.copy(isBookmark = !info.isBookmark))
+        }
+        toggleBookmark()
     }
 
     fun handleLike() {
@@ -110,6 +117,14 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
     fun handleShare() {
         val msg = "Share is not implemented"
         notify(Notify.ErrorMessage(msg,"OK",null))
+    }
+
+    fun hideMenu() {
+        updateState { it.copy(isShowMenu = false) }
+    }
+
+    fun showMenu() {
+        updateState { it.copy(isShowMenu = menuIsShown) }
     }
 
 }

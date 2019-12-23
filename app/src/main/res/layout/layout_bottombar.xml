@@ -5,7 +5,7 @@
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
 
-        <ru.skillbranch.skillarticles.ui.custom.CheсkableImageView
+        <ru.skillbranch.skillarticles.ui.custom.CheckableImageView
             android:id="@+id/btn_like"
             style="@style/BottombarIcon"
             android:src="@drawable/like_states"
@@ -16,7 +16,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ru.skillbranch.skillarticles.ui.custom.CheсkableImageView
+        <ru.skillbranch.skillarticles.ui.custom.CheckableImageView
             android:id="@+id/btn_bookmark"
             style="@style/BottombarIcon"
             android:src="@drawable/bookmark_states"
@@ -26,7 +26,7 @@
             app:layout_constraintStart_toEndOf="@+id/btn_like"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ru.skillbranch.skillarticles.ui.custom.CheсkableImageView
+        <ImageView
             android:id="@+id/btn_share"
             style="@style/BottombarIcon"
             android:src="@drawable/ic_share_black_24dp"
@@ -36,7 +36,7 @@
             android:clickable="true"
             android:focusable="true"/>
 
-        <ru.skillbranch.skillarticles.ui.custom.CheсkableImageView
+        <ru.skillbranch.skillarticles.ui.custom.CheckableImageView
             android:id="@+id/btn_settings"
             style="@style/BottombarIcon"
             android:src="@drawable/ic_format_size_black_24dp"

@@ -3,8 +3,10 @@ package ru.skillbranch.skillarticles.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
-import android.widget.Toolbar
+
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
@@ -32,6 +34,7 @@ class RootActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
         viewModel.observeState(this) {
             renderUi(it)
+            setupToolbar()
         }
 
         viewModel.observeNotifications(this) {
@@ -66,9 +69,21 @@ class RootActivity : AppCompatActivity() {
         tv_text_content.text = if (data.isLoadingContent) "loading" else data.content.first() as String
 
         // bind toolbar
-        toolbar.title = data.title ?: "loading..."
+        toolbar.title = data.title ?: "Skill Articles"
         toolbar.subtitle = data.category ?: "loading..."
         if(data.categoryIcon != null) toolbar.logo = getDrawable(data.categoryIcon as Int)
+
+        scrollview.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if (scrollY > oldScrollY) {
+                bottombar.hide()
+                viewModel.hideMenu()
+
+            } else {
+                bottombar.show()
+                viewModel.showMenu()
+            }
+
+        }
 
     }
 
@@ -101,9 +116,10 @@ class RootActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
-        supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         var logo = if(toolbar.childCount > 2) toolbar.getChildAt(2) as ImageView else null
         logo?.scaleType = ImageView.ScaleType.CENTER_CROP
+
         val lp = logo?.layoutParams as? Toolbar.LayoutParams
         lp?.let {
             it.width = this.dpToIntPx(40)
@@ -118,12 +134,17 @@ class RootActivity : AppCompatActivity() {
         btn_bookmark.setOnClickListener { viewModel.handleBookmark() }
         btn_share.setOnClickListener { viewModel.handleShare() }
         btn_settings.setOnClickListener { viewModel.handleToggleMenu() }
+        bottombar.setOnClickListener { toggleBottomBar() }
     }
 
     private fun setupSubmenu() {
         btn_text_up.setOnClickListener{ viewModel.handleUpText() }
         btn_text_down.setOnClickListener{ viewModel.handleDownText() }
         switch_mode.setOnClickListener { viewModel.handleNightMode() }
+    }
+
+    private fun toggleBottomBar() {
+        //if (bottombar.isHidden) bottombar.show() else bottombar.hide()
     }
 
 
