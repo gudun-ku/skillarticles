@@ -37,20 +37,21 @@ class ExampleInstrumentedTest {
             .assertValue { it.isLoadingContent == true && it.isBookmark == true }
             .awaitNextValue() //load article info
             .assertValue {
-                it.isLoadingContent == true &&
-                        it.isBookmark == true &&
-                        it.title == "CoordinatorLayout Basic" &&
-                        it.category == "Android" &&
-                        it.author == "Skill-Branch"
+                it.isLoadingContent == true
+                &&
+                it.isBookmark == true &&
+                it.title == "CoordinatorLayout Basic" &&
+                it.category == "Android" &&
+                it.author == "Skill-Branch"
             }
             .awaitNextValue()//load article content
             .assertValue {
                 it.isLoadingContent == false &&
-                        it.isBookmark == true &&
-                        it.title == "CoordinatorLayout Basic" &&
-                        it.category == "Android" &&
-                        it.author == "Skill-Branch" &&
-                        it.content.first() == longText
+                it.isBookmark == true &&
+                it.title == "CoordinatorLayout Basic" &&
+                it.category == "Android" &&
+                it.author == "Skill-Branch" &&
+                it.content.first() == longText
             }
             .assertHistorySize(4)
 
@@ -68,7 +69,7 @@ class ExampleInstrumentedTest {
             .awaitValue()
             .assertValue {
                 it.isLike == true &&
-                        it.isBookmark == false
+                it.isBookmark == false
             }
 
         //change article data
@@ -84,8 +85,8 @@ class ExampleInstrumentedTest {
         vm.state.test()
             .awaitValue()
             .assertValue {
-                it.title == "test title" &&
-                it.category == "test" &&
+                it.title == "test title"
+                it.category == "test"
                 it.author == "test" &&
                 it.shareLink == "any share link" &&
                 it.date == expectedDate.format()
@@ -98,6 +99,16 @@ class ExampleInstrumentedTest {
             .awaitValue()
             .assertValue {
                 it.content.first() == "long long text content"
+            }
+
+        //change personal info again
+        LocalDataHolder.articleInfo.value = ArticlePersonalInfo(isLike = false, isBookmark = false)
+
+        vm.state.test()
+            .awaitValue()
+            .assertValue {
+                it.isLike == false &&
+                        it.isBookmark == false
             }
     }
 

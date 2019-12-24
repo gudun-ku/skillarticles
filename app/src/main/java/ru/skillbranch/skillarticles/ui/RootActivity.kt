@@ -2,9 +2,11 @@ package ru.skillbranch.skillarticles.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.widget.ImageView
 
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProviders
@@ -114,10 +116,35 @@ class RootActivity : AppCompatActivity() {
         snackbar.show()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_search, menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.queryHint = "Введите заголовок чата"
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //viewModel.handleSearchQuery(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                //viewModel.handleSearchQuery(newText)
+                return true
+            }
+        })
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
     private fun setupToolbar() {
+
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        var logo = if(toolbar.childCount > 2) toolbar.getChildAt(2) as ImageView else null
+
+        var logo = if((toolbar.childCount > 2) and (toolbar.getChildAt(2) is ImageView))
+            toolbar.getChildAt(2) as ImageView else null
+
         logo?.scaleType = ImageView.ScaleType.CENTER_CROP
 
         val lp = logo?.layoutParams as? Toolbar.LayoutParams
@@ -130,22 +157,18 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun setupBottombar() {
+
         btn_like.setOnClickListener { viewModel.handleLike() }
         btn_bookmark.setOnClickListener { viewModel.handleBookmark() }
         btn_share.setOnClickListener { viewModel.handleShare() }
         btn_settings.setOnClickListener { viewModel.handleToggleMenu() }
-        bottombar.setOnClickListener { toggleBottomBar() }
     }
 
     private fun setupSubmenu() {
+
         btn_text_up.setOnClickListener{ viewModel.handleUpText() }
         btn_text_down.setOnClickListener{ viewModel.handleDownText() }
         switch_mode.setOnClickListener { viewModel.handleNightMode() }
     }
-
-    private fun toggleBottomBar() {
-        //if (bottombar.isHidden) bottombar.show() else bottombar.hide()
-    }
-
 
 }

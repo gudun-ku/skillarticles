@@ -19,6 +19,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
             state.copy (
                 shareLink = article.shareLink,
                 title = article.title,
+                author = article.author,
                 category = article.category,
                 categoryIcon = article.categoryIcon,
                 date = article.date.format()
@@ -92,6 +93,16 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
             repository.updateArticlePersonalInfo(info.copy(isBookmark = !info.isBookmark))
         }
         toggleBookmark()
+
+        val msg = if(currentState.isBookmark) Notify.TextMessage("Add to bookmarks")
+        else {
+            Notify.ActionMessage(
+                "Remove from bookmarks",     //message
+                "Stop removing",    //action label
+                toggleBookmark                         //lambda
+            )
+        }
+        notify(msg)
     }
 
     fun handleLike() {
@@ -105,9 +116,9 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleStat
         val msg = if(currentState.isLike) Notify.TextMessage("Mark is liked")
         else {
             Notify.ActionMessage(
-                "Don't like it anymore",    //message
+                "Don`t like it anymore",     //message
                 "No, still like it",    //action label
-                toggleLike                       //lambda
+                toggleLike                         //lambda
             )
         }
         notify(msg)
