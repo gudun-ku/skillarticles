@@ -1,25 +1,26 @@
 package ru.skillbranch.skillarticles.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.widget.ImageView
-
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.widget.NestedScrollView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
 import kotlinx.android.synthetic.main.layout_bottombar.*
 import kotlinx.android.synthetic.main.layout_submenu.*
-import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
+import ru.skillbranch.skillarticles.ui.custom.BottomBarBehavior
 import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import ru.skillbranch.skillarticles.viewmodels.Notify
 import ru.skillbranch.skillarticles.viewmodels.ViewModelFactory
+import ru.skillbranch.skillarticles.R
+
 
 class RootActivity : AppCompatActivity() {
 
@@ -75,13 +76,11 @@ class RootActivity : AppCompatActivity() {
         toolbar.subtitle = data.category ?: "loading..."
         if(data.categoryIcon != null) toolbar.logo = getDrawable(data.categoryIcon as Int)
 
-        scrollview.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+        scrollview.setOnScrollChangeListener { _, _, scrollY: Int, _, oldScrollY: Int ->
             if (scrollY > oldScrollY) {
-                bottombar.hide()
                 viewModel.hideMenu()
 
             } else {
-                bottombar.show()
                 viewModel.showMenu()
             }
 

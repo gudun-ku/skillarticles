@@ -66,6 +66,7 @@
         android:theme="@style/ArticleBarsTheme"
         android:elevation="4dp"
         app:layout_insetEdge="bottom"
+        app:layout_behavior=".ui.custom.BottomBarBehavior"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
