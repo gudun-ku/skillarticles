@@ -13,7 +13,6 @@ import ru.skillbranch.skillarticles.extensions.dpToPx
 import kotlin.math.hypot
 import android.view.animation.TranslateAnimation
 
-
 class Bottombar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -84,7 +83,7 @@ class Bottombar @JvmOverloads constructor(
             height.toFloat(), // fromYDelta
             0f
         )                // toYDelta
-        animate.duration = 500
+        animate.duration = 200
         animate.fillAfter = true
         startAnimation(animate)
     }
@@ -97,7 +96,7 @@ class Bottombar @JvmOverloads constructor(
             0f, // fromYDelta
             height.toFloat()
         ) // toYDelta
-        animate.duration = 500
+        animate.duration = 200
         animate.fillAfter = true
         startAnimation(animate)
     }

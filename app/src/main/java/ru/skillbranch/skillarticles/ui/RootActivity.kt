@@ -2,19 +2,18 @@ package ru.skillbranch.skillarticles.ui
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_root.*
 import kotlinx.android.synthetic.main.layout_bottombar.*
 import kotlinx.android.synthetic.main.layout_submenu.*
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
-import ru.skillbranch.skillarticles.ui.custom.BottomBarBehavior
 import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import ru.skillbranch.skillarticles.viewmodels.Notify
@@ -25,6 +24,9 @@ import ru.skillbranch.skillarticles.R
 class RootActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ArticleViewModel
+
+    private var searchIsSearch = false
+    private var searchQueryText = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,40 @@ class RootActivity : AppCompatActivity() {
 
         viewModel.observeNotifications(this) {
             renderNotification(it)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.handleIsSearch(searchIsSearch)
+        viewModel.handleSearchQuery(searchQueryText)
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        viewModel?.currentState.let {
+            searchIsSearch = it.isSearch
+            searchQueryText = it.searchQuery ?: ""
+        }
+    }
+
+    private fun setupToolbar() {
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        var logo = if ((toolbar.childCount > 2) and (toolbar.getChildAt(2) is ImageView))
+            toolbar.getChildAt(2) as ImageView else null
+
+        logo?.scaleType = ImageView.ScaleType.CENTER_CROP
+
+        val lp = logo?.layoutParams as? Toolbar.LayoutParams
+        lp?.let {
+            it.width = this.dpToIntPx(40)
+            it.height = this.dpToIntPx(40)
+            it.marginEnd = this.dpToIntPx(16)
+            logo?.layoutParams = it
         }
     }
 
@@ -115,45 +151,54 @@ class RootActivity : AppCompatActivity() {
         snackbar.show()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            searchIsSearch = false
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search, menu)
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = "Введите заголовок чата"
+        searchView.queryHint = "Введите строку поиска"
+
+        if (searchIsSearch) {
+            searchItem.expandActionView()
+            searchView.setQuery(searchQueryText, false)
+        }
+
+        searchItem.setOnActionExpandListener(object: MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                //supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                searchIsSearch = true
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                searchIsSearch = false
+                return true
+            }
+        })
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                //viewModel.handleSearchQuery(query)
+                searchIsSearch = false
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                //viewModel.handleSearchQuery(newText)
+            override fun onQueryTextChange(queryText: String?): Boolean {
+                searchQueryText = queryText ?: ""
                 return true
             }
+
         })
 
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun setupToolbar() {
-
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        var logo = if((toolbar.childCount > 2) and (toolbar.getChildAt(2) is ImageView))
-            toolbar.getChildAt(2) as ImageView else null
-
-        logo?.scaleType = ImageView.ScaleType.CENTER_CROP
-
-        val lp = logo?.layoutParams as? Toolbar.LayoutParams
-        lp?.let {
-            it.width = this.dpToIntPx(40)
-            it.height = this.dpToIntPx(40)
-            it.marginEnd = this.dpToIntPx(16)
-            logo?.layoutParams = it
-        }
-    }
 
     private fun setupBottombar() {
 
@@ -168,6 +213,11 @@ class RootActivity : AppCompatActivity() {
         btn_text_up.setOnClickListener{ viewModel.handleUpText() }
         btn_text_down.setOnClickListener{ viewModel.handleDownText() }
         switch_mode.setOnClickListener { viewModel.handleNightMode() }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
     }
 
 }
