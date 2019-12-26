@@ -1,9 +1,11 @@
 package ru.skillbranch.skillarticles.ui.custom
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +16,11 @@ import kotlin.math.min
 class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
     CoordinatorLayout.Behavior<View>(context,attributeSet) {
 
+    @ViewCompat.NestedScrollType
+    private var lastStartedType: Int = 0
+    private var offsetAnimator: ValueAnimator? = null
+    private var isSnappingEnabled = false
+
     override fun onStartNestedScroll(
         coordinatorLayout: CoordinatorLayout,
         child: View,
@@ -22,7 +29,40 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
         axes: Int,
         type: Int
     ): Boolean {
-        return axes == ViewCompat.SCROLL_AXIS_VERTICAL
+        if (axes != ViewCompat.SCROLL_AXIS_VERTICAL)
+            return false
+
+        lastStartedType = type
+        offsetAnimator?.cancel()
+
+        return true
+    }
+
+    override fun onStopNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: View,
+        target: View,
+        type: Int
+    ) {
+        if (!isSnappingEnabled)
+            return
+
+        // add snap behaviour
+        // Logic here borrowed from AppBarLayout onStopNestedScroll code
+        if (lastStartedType == ViewCompat.TYPE_TOUCH || type == ViewCompat.TYPE_NON_TOUCH) {
+            // find nearest seam
+            val currTranslation = child.translationY
+            val childHalfHeight = child.height * 0.5f
+
+            // translate down
+            if (currTranslation >= childHalfHeight) {
+                animateBarVisibility(child, isVisible = false)
+            }
+            // translate up
+            else {
+                animateBarVisibility(child, isVisible = true)
+            }
+        }
     }
 
     override fun onNestedPreScroll(
@@ -61,43 +101,23 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
         }
     }
 
+    private fun animateBarVisibility(child: View, isVisible: Boolean) {
+        if (offsetAnimator == null) {
+            offsetAnimator = ValueAnimator().apply {
+                interpolator = DecelerateInterpolator()
+                duration = 200L
+            }
 
-    /*
-    private var oldScrollY = 0
-
-    override fun layoutDependsOn(
-        parent: CoordinatorLayout,
-        child: View,
-        dependency: View
-    ): Boolean {
-        return dependency is NestedScrollView
-    }
-
-    override fun onDependentViewChanged(
-        parent: CoordinatorLayout,
-        child: View,
-        dependency: View
-    ): Boolean {
-        if (parent == null || child == null || dependency == null)
-            return false
-
-        changeBottomBarState(child as Bottombar, dependency)
-        return true
-    }
-
-    private fun changeBottomBarState(bottombar: Bottombar, scrollView: View) {
-        if (scrollView is NestedScrollView) {
-
-            if (scrollView.scrollY > oldScrollY)
-                bottombar.hide()
-            else if (scrollView.scrollY < oldScrollY)
-                bottombar.show()
-
-            oldScrollY = scrollView.scrollY
+            offsetAnimator?.addUpdateListener {
+                child.translationY = it.animatedValue as Float
+            }
+        } else {
+            offsetAnimator?.cancel()
         }
 
+        val targetTranslation = if (isVisible) 0f else child.height.toFloat()
+        offsetAnimator?.setFloatValues(child.translationY, targetTranslation)
+        offsetAnimator?.start()
     }
-
-     */
 
 }
