@@ -126,7 +126,9 @@ class RootActivity : AppCompatActivity() {
 
     private fun renderNotification(notify: Notify) {
         val snackbar = Snackbar.make(coordinator_container,notify.message, Snackbar.LENGTH_LONG)
-            .setAnchorView(bottombar)
+            // now we don't need that when use custom behavior
+            //.setAnchorView(bottombar)
+
 
         when(notify) {
             is Notify.TextMessage -> { /* nothing */}

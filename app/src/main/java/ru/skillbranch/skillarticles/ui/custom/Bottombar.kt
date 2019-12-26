@@ -44,36 +44,6 @@ class Bottombar @JvmOverloads constructor(
         slideDown()
     }
 
-    private fun animatedShow() {
-        val endRadius = hypot(centerX, centerY).toInt()
-        val anim = ViewAnimationUtils.createCircularReveal(
-            this,
-            centerX.toInt(),
-            centerY.toInt(),
-            0f,
-            endRadius.toFloat()
-        )
-        anim.doOnStart {
-            visibility = View.VISIBLE
-        }
-        anim.start()
-    }
-
-    private fun animatedHide() {
-        val endRadius = hypot(centerX, centerY).toInt()
-        val anim = ViewAnimationUtils.createCircularReveal(
-            this,
-            centerX.toInt(),
-            centerY.toInt(),
-            endRadius.toFloat(),
-            0f
-        )
-        anim.doOnEnd {
-            visibility = View.GONE
-        }
-        anim.start()
-    }
-
     // slide the view from below itself to the current position
     private fun slideUp() {
         visibility = View.VISIBLE
