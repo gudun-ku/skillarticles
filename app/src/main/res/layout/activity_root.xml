@@ -54,6 +54,7 @@
         android:elevation="8dp"
         android:layout_marginBottom="8dp"
         app:layout_dodgeInsetEdges="bottom"
+        app:layout_behavior=".ui.custom.ArticleSubmenuBehavior"
         android:visibility="gone"
         tools:visibility="visible"
         />

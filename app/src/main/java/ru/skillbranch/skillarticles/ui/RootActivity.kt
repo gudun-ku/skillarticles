@@ -112,6 +112,7 @@ class RootActivity : AppCompatActivity() {
         toolbar.subtitle = data.category ?: "loading..."
         if(data.categoryIcon != null) toolbar.logo = getDrawable(data.categoryIcon as Int)
 
+        /*
         scrollview.setOnScrollChangeListener { _, _, scrollY: Int, _, oldScrollY: Int ->
             if (scrollY > oldScrollY) {
                 viewModel.hideMenu()
@@ -121,7 +122,7 @@ class RootActivity : AppCompatActivity() {
             }
 
         }
-
+         */
     }
 
     private fun renderNotification(notify: Notify) {
@@ -215,11 +216,6 @@ class RootActivity : AppCompatActivity() {
         btn_text_up.setOnClickListener{ viewModel.handleUpText() }
         btn_text_down.setOnClickListener{ viewModel.handleDownText() }
         switch_mode.setOnClickListener { viewModel.handleNightMode() }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
     }
 
 }
