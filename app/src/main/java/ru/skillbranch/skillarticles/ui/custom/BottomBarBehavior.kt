@@ -89,7 +89,6 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
         return super.layoutDependsOn(parent, child, dependency)
     }
 
-
     private fun updateSnackbar(child: View, snackbarLayout: Snackbar.SnackbarLayout) {
         if (snackbarLayout.layoutParams is CoordinatorLayout.LayoutParams) {
             val params = snackbarLayout.layoutParams as CoordinatorLayout.LayoutParams
@@ -118,6 +117,7 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
         val targetTranslation = if (isVisible) 0f else child.height.toFloat()
         offsetAnimator?.setFloatValues(child.translationY, targetTranslation)
         offsetAnimator?.start()
+
     }
 
 }

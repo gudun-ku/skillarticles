@@ -5,8 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
-import kotlin.math.max
-import kotlin.math.min
+import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
+import com.google.android.material.snackbar.Snackbar
 
 
 class ArticleSubmenuBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
@@ -14,6 +15,7 @@ class ArticleSubmenuBehavior<V: View>(context: Context, attributeSet: AttributeS
 
     @ViewCompat.NestedScrollType
     private var lastStartedType: Int = 0
+    private var snackbarTranslation: Int = 0
 
     override fun onStartNestedScroll(
         coordinatorLayout: CoordinatorLayout,
@@ -41,6 +43,41 @@ class ArticleSubmenuBehavior<V: View>(context: Context, attributeSet: AttributeS
         type: Int
     ) {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
-        child.translationY = max(0f, min(child.height.toFloat(), child.translationY + dy))
+        //child.translationY = max(0f, min(child.height.toFloat(), child.translationY + dy))
+    }
+
+    override fun layoutDependsOn(
+        parent: CoordinatorLayout,
+        child: View,
+        dependency: View
+    ): Boolean {
+        return dependency is Bottombar || dependency is Snackbar.SnackbarLayout
+    }
+
+    override fun onDependentViewChanged(
+        parent: CoordinatorLayout,
+        child: View,
+        dependency: View
+    ): Boolean {
+        if(dependency is Bottombar ) {
+            if (dependency.translationY > 0)
+                child.translationY = 0f + child.height + dependency.marginTop +  dependency.translationY + snackbarTranslation
+            else
+                child.translationY = 0f
+            return true
+        }
+
+        if(dependency is Snackbar.SnackbarLayout ) {
+            snackbarTranslation = dependency.marginTop + dependency.marginBottom + dependency.height
+            return true
+        }
+        return false
+    }
+
+    override fun onDependentViewRemoved(parent: CoordinatorLayout, child: View, dependency: View) {
+        if(dependency is Snackbar.SnackbarLayout ) {
+            snackbarTranslation = 0
+        }
+        super.onDependentViewRemoved(parent, child, dependency)
     }
 }
