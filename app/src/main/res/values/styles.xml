@@ -18,7 +18,6 @@
         <item name="colorOnError">#FFFFFF</item>
         <item name="colorSurface">@color/color_surface</item>
         <item name="colorOnSurface">@color/color_on_surface</item>
-
         <item name="snackbarStyle">@style/CustomSnackbar</item>
     </style>
 
