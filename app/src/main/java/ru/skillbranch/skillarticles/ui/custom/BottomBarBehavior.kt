@@ -1,8 +1,6 @@
 package ru.skillbranch.skillarticles.ui.custom
 
 import android.animation.ValueAnimator
-import android.content.Context
-import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -13,8 +11,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
-    CoordinatorLayout.Behavior<View>(context,attributeSet) {
+class BottombarBehavior: CoordinatorLayout.Behavior<Bottombar>() {
 
     @ViewCompat.NestedScrollType
     private var lastStartedType: Int = 0
@@ -23,7 +20,7 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
 
     override fun onStartNestedScroll(
         coordinatorLayout: CoordinatorLayout,
-        child: View,
+        child: Bottombar,
         directTargetChild: View,
         target: View,
         axes: Int,
@@ -40,7 +37,7 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
 
     override fun onStopNestedScroll(
         coordinatorLayout: CoordinatorLayout,
-        child: View,
+        child: Bottombar,
         target: View,
         type: Int
     ) {
@@ -67,7 +64,7 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
 
     override fun onNestedPreScroll(
         coordinatorLayout: CoordinatorLayout,
-        child: View,
+        child: Bottombar,
         target: View,
         dx: Int,
         dy: Int,
@@ -80,7 +77,7 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
 
     override fun layoutDependsOn(
         parent: CoordinatorLayout,
-        child: View,
+        child: Bottombar,
         dependency: View
     ): Boolean {
         if (dependency is Snackbar.SnackbarLayout) {
@@ -88,6 +85,7 @@ class BottomBarBehavior<V: View>(context: Context, attributeSet: AttributeSet) :
         }
         return super.layoutDependsOn(parent, child, dependency)
     }
+
 
     private fun updateSnackbar(child: View, snackbarLayout: Snackbar.SnackbarLayout) {
         if (snackbarLayout.layoutParams is CoordinatorLayout.LayoutParams) {
