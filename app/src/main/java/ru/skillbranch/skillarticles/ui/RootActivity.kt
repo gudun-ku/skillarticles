@@ -1,10 +1,13 @@
 package ru.skillbranch.skillarticles.ui
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -17,24 +20,25 @@ import kotlinx.android.synthetic.main.layout_submenu.*
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
-import ru.skillbranch.skillarticles.viewmodels.Notify
-import ru.skillbranch.skillarticles.viewmodels.ViewModelFactory
+import ru.skillbranch.skillarticles.viewmodels.base.Notify
+import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 import ru.skillbranch.skillarticles.R
+import ru.skillbranch.skillarticles.extensions.setMarginOptionally
+import ru.skillbranch.skillarticles.ui.base.BaseActivity
+import ru.skillbranch.skillarticles.ui.custom.SearchSpan
 
 
-class RootActivity : AppCompatActivity() {
+class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
-    private lateinit var viewModel: ArticleViewModel
 
-    private var searchIsSearch = false
+    override val layout: Int = R.layout.activity_root
+    override lateinit var viewModel: ArticleViewModel
+
+    private var isSearching = false
     private var searchQueryText = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_root)
-        setupToolbar()
-        setupBottombar()
-        setupSubmenu()
 
         val vmFactory = ViewModelFactory("0")
         viewModel = ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
@@ -47,10 +51,49 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
+    override fun setupViews() {
+        setupToolbar()
+        setupBottombar()
+        setupSubmenu()
+    }
+
+    override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
+        val content = tv_text_content.text as Spannable
+        val bgColor = Color.RED
+        val fgColor = Color.WHITE
+        searchResult.forEach { (start, end) ->
+            content.setSpan(
+                SearchSpan(bgColor, fgColor),
+                start,
+                end,
+                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
+    override fun renderSearchPosition(searchPosition: Int) {
+
+
+    }
+
+    override fun clearSearchResult() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showSearchBar() {
+        bottombar.setSearchState(true)
+        scrollview.setMarginOptionally(bottom = dpToIntPx(56))
+    }
+
+    override fun hideSearchBar() {
+        bottombar.setSearchState(false)
+        scrollview.setMarginOptionally(bottom = dpToIntPx(0))
+    }
+
     override fun onPause() {
         super.onPause()
-        viewModel.handleSearchMode(searchIsSearch)
-        viewModel.handleSearchQuery(searchQueryText)
+        viewModel.handleSearchMode(isSearching)
+        viewModel.handleSearch(searchQueryText)
     }
 
 
@@ -76,7 +119,9 @@ class RootActivity : AppCompatActivity() {
     private fun renderUi(data:ArticleState) {
 
         // bind search state
-        bottombar.setSearchState(data.isSearch)
+        if(data.isSearch) showSearchBar() else hideSearchBar()
+
+        if(data.searchResults.isNotEmpty()) renderSearchResult(data.searchResults)
 
         // bind submenu state
         btn_settings.isChecked = data.isShowMenu
@@ -101,7 +146,13 @@ class RootActivity : AppCompatActivity() {
         }
 
         // bind content
-        tv_text_content.text = if (data.isLoadingContent) "loading" else data.content.first() as String
+        if (data.isLoadingContent) {
+            tv_text_content.text = "loading"
+        } else if ( tv_text_content.text == "loading"){ // don't override
+            val content = data.content.first() as String
+            tv_text_content.setText(content, TextView.BufferType.SPANNABLE)
+        }
+
 
         // bind toolbar
         toolbar.title = data.title ?: "Skill Articles"
@@ -152,7 +203,7 @@ class RootActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            searchIsSearch = false
+            isSearching = false
         }
         return super.onOptionsItemSelected(item)
     }
@@ -163,7 +214,7 @@ class RootActivity : AppCompatActivity() {
         val searchView = searchItem?.actionView as SearchView
         searchView.queryHint = "Введите строку поиска"
 
-        if (searchIsSearch) {
+        if (isSearching) {
             searchItem.expandActionView()
             searchView.setQuery(searchQueryText, false)
             searchView.clearFocus()
@@ -186,7 +237,7 @@ class RootActivity : AppCompatActivity() {
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.handleSearchQuery(query)
+                viewModel.handleSearch(query)
                 return true
             }
 

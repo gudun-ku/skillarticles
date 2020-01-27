@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.math.MathUtils
 import androidx.core.view.ViewCompat
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.max
@@ -71,8 +72,11 @@ class BottombarBehavior: CoordinatorLayout.Behavior<Bottombar>() {
         consumed: IntArray,
         type: Int
     ) {
+        if (!child.isSearchMode) {
+            val offset = MathUtils.clamp(child.translationY + dy, 0f, child.height.toFloat())
+            if (offset != child.translationY) child.translationY = offset
+        }
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
-        child.translationY = max(0f, min(child.height.toFloat(), child.translationY + dy))
     }
 
     override fun layoutDependsOn(
