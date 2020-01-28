@@ -51,7 +51,7 @@ class Bottombar @JvmOverloads constructor(
             translationY = state.ssTranslationY
             // search
             isSearchMode = state.ssIsSearchMode
-            reveal.isVisible = !isSearchMode
+            reveal.isVisible = isSearchMode
             group_bottom.isVisible = !isSearchMode
 
         }
