@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles.ui.custom
+package ru.skillbranch.skillarticles.ui.custom.behaviors
 
 import android.animation.ValueAnimator
 import android.view.Gravity
@@ -8,8 +8,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.math.MathUtils
 import androidx.core.view.ViewCompat
 import com.google.android.material.snackbar.Snackbar
-import kotlin.math.max
-import kotlin.math.min
+import ru.skillbranch.skillarticles.ui.custom.Bottombar
 
 
 class BottombarBehavior: CoordinatorLayout.Behavior<Bottombar>() {

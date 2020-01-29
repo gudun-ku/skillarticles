@@ -1,5 +1,7 @@
 package ru.skillbranch.skillarticles.viewmodels.base
 
+import android.os.Bundle
+import android.view.AbsSavedState
 import androidx.annotation.UiThread
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
@@ -78,6 +80,17 @@ abstract class BaseViewModel<T: IViewModelState>(initState: T) : ViewModel() {
             state.value = onChanged(it, currentState) ?: return@addSource
         }
     }
+
+    fun saveState(outState: Bundle) {
+        currentState.save(outState)
+    }
+
+
+    @Suppress("UNCHECKED_CAST")
+    fun restoreState(savedState: Bundle)  {
+        state.value = currentState.restore(savedState) as T
+    }
+
 
 }
 
