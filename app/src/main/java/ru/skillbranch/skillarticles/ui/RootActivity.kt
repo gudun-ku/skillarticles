@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -43,16 +44,15 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         val vmFactory = ViewModelFactory("0")
         ViewModelProviders.of(this,vmFactory).get(ArticleViewModel::class.java)
     }
-    override val binding: ArticleBinding by lazy { ArticleBinding() }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    public override val binding: ArticleBinding by lazy { ArticleBinding() }
 
-
-    private val bgColor by AttrValue(R.attr.colorSecondary)
-    private val fgColor by AttrValue(R.attr.colorOnSecondary)
+    val bgColor by AttrValue(R.attr.colorSecondary)
+    val fgColor by AttrValue(R.attr.colorOnSecondary)
 
     inner class ArticleBinding : Binding() {
 
-        var isSearching = false
         var isFocusedSearch:Boolean = false
         var searchQueryText = ""
 
@@ -248,7 +248,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             is Notify.ActionMessage -> {
                 snackbar.setActionTextColor(getColor(R.color.color_accent_dark))
                 snackbar.setAction(notify.actionLabel) {
-                    notify.actionHandler?.invoke()
+                    notify.actionHandler.invoke()
                 }
             }
             is Notify.ErrorMessage -> {
@@ -268,7 +268,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            binding.isSearching = false
+            binding.isSearch = false
         }
         return super.onOptionsItemSelected(item)
     }
@@ -279,7 +279,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         val searchView = menuItem?.actionView as? SearchView
         searchView?.queryHint = getString(R.string.article_search_placeholder)
 
-        if (binding.isSearching) {
+        if (binding.isSearch) {
             menuItem?.expandActionView()
             searchView?.setQuery(binding.searchQueryText, false)
 
@@ -309,6 +309,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 binding.searchQueryText = queryText ?: ""
                 if (binding.searchQueryText.isNotEmpty())
                     viewModel.handleSearch(binding.searchQueryText)
+
 
                 return true
             }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
+import ru.skillbranch.skillarticles.viewmodels.base.ViewModelDelegate
 
 abstract class BaseActivity<T: BaseViewModel<out IViewModelState>>: AppCompatActivity() {
     protected abstract val binding: Binding
@@ -22,6 +23,15 @@ abstract class BaseActivity<T: BaseViewModel<out IViewModelState>>: AppCompatAct
         binding.onFinishInflate()
         viewModel.observeState(this) { binding.bind(it) }
         viewModel.observeNotifications(this) { renderNotification(it)}
+    }
+
+    // возвращает экземпляр делегата ViewModelDelegate
+    internal inline fun provideViewModel(arg : Any?) : ViewModelDelegate<T>{
+        TODO("""
+            Реализуй в классе BaseActivity инлайн функцию
+            internal inline fun provideViewModel(arg : Any?) : ViewModelDelegate 
+            - возвращающую экземпляр делегата ViewModelDelegate
+        """.trimIndent())
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

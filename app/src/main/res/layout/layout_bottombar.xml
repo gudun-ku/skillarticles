@@ -76,13 +76,13 @@
             />
 
         <TextView
-                android:id="@+id/tv_search_results"
+                android:id="@+id/tv_search_result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_standard_16"
                 android:text="Not found"
                 android:layout_gravity="center_vertical"
-                android:textColor="@android:color/white"
+                android:textColor="?attr/colorSurface"
                 />
 
         <View
