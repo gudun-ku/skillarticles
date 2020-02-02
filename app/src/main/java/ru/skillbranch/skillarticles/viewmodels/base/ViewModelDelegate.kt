@@ -17,5 +17,6 @@ class ViewModelDelegate<T : ViewModel>(private val clazz: Class<T>, private val 
             Пример:
             val viewModel : TestViewModel by provideViewModel("test args")
         """.trimIndent()) //To change body of created functions use File | Settings | File Templates.
+
     }
 }
