@@ -27,11 +27,15 @@ abstract class BaseActivity<T: BaseViewModel<out IViewModelState>>: AppCompatAct
 
     // возвращает экземпляр делегата ViewModelDelegate
     internal inline fun provideViewModel(arg : Any?) : ViewModelDelegate<T>{
-        TODO("""
-            Реализуй в классе BaseActivity инлайн функцию
-            internal inline fun provideViewModel(arg : Any?) : ViewModelDelegate 
-            - возвращающую экземпляр делегата ViewModelDelegate
-        """.trimIndent())
+
+        @Suppress("UNCHECKED_CAST")
+        return ViewModelDelegate(BaseActivity::class.java as Class<T>,arg)
+
+        //        TODO("""
+        //            Реализуй в классе BaseActivity инлайн функцию
+        //            internal inline fun provideViewModel(arg : Any?) : ViewModelDelegate
+        //            - возвращающую экземпляр делегата ViewModelDelegate
+        //        """.trimIndent())
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
