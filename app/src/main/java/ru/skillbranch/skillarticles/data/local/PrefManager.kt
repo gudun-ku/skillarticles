@@ -8,7 +8,13 @@ import androidx.preference.PreferenceManager
 
 class PrefManager(context: Context) {
 
-    private val sharedPreferences: SharedPreferences
+    val sharedPreferences: SharedPreferences
             by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
+    fun clearAll() {
+        sharedPreferences
+            .edit()
+            .clear()
+            .apply()
+    }
 }
