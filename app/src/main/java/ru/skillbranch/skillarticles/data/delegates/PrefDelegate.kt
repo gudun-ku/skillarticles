@@ -10,7 +10,7 @@ class PrefDelegate<T>(private val defaultValue: T) : ReadWriteProperty<PrefManag
 
     @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
     override fun getValue(thisRef: PrefManager, property: KProperty<*>): T? {
-        val prefs = thisRef.sharedPreferences
+        val prefs = thisRef.preferences
         return when(defaultValue) {
             is Boolean -> prefs.getBoolean(property.name, defaultValue as Boolean)
             is String -> prefs.getString(property.name, defaultValue as String)
@@ -22,7 +22,7 @@ class PrefDelegate<T>(private val defaultValue: T) : ReadWriteProperty<PrefManag
     }
 
     override fun setValue(thisRef: PrefManager, property: KProperty<*>, value: T?) {
-        val prefsEditor = thisRef.sharedPreferences.edit()
+        val prefsEditor = thisRef.preferences.edit()
         when (value) {
             is Boolean -> prefsEditor.putBoolean(property.name, value as Boolean)
             is String -> prefsEditor.putString(property.name, value as String)
@@ -33,4 +33,6 @@ class PrefDelegate<T>(private val defaultValue: T) : ReadWriteProperty<PrefManag
         }
         prefsEditor.apply()
     }
+
 }
+
