@@ -2,6 +2,7 @@ package ru.skillbranch.skillarticles.ui.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
@@ -26,16 +27,8 @@ abstract class BaseActivity<T: BaseViewModel<out IViewModelState>>: AppCompatAct
     }
 
     // возвращает экземпляр делегата ViewModelDelegate
-    internal inline fun provideViewModel(arg : Any?) : ViewModelDelegate<T>{
-
-        @Suppress("UNCHECKED_CAST")
-        return ViewModelDelegate(BaseActivity::class.java as Class<T>,arg)
-
-        //        TODO("""
-        //            Реализуй в классе BaseActivity инлайн функцию
-        //            internal inline fun provideViewModel(arg : Any?) : ViewModelDelegate
-        //            - возвращающую экземпляр делегата ViewModelDelegate
-        //        """.trimIndent())
+    internal inline fun <reified T:ViewModel> provideViewModel(arg : Any?): ViewModelDelegate<T> {
+        return ViewModelDelegate(T::class.java, arg)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
