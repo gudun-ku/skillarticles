@@ -196,7 +196,7 @@ data class ArticleState(
         )
     }
 
-    override fun restore(savedState: Bundle): ArticleState {
+    override fun restore(savedState: Bundle): IViewModelState {
         return copy (
             isSearch = savedState["isSearch"] as Boolean,
             searchQuery  = savedState["searchQuery"] as? String,
