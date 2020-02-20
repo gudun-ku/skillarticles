@@ -1,6 +1,7 @@
 package ru.skillbranch.skillarticles
 
 import junit.framework.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Test
 import ru.skillbranch.skillarticles.markdown.Element
 import ru.skillbranch.skillarticles.markdown.MarkdownParser
@@ -114,6 +115,51 @@ class MarkdownParserTest {
         printResults(actual)
         println("")
         printElements(result.elements)
+    }
+
+    @Test
+    fun parse_link() {
+        val result = MarkdownParser.parse(linkString)
+        val actualTitles = prepare<Element.Link>(result.elements)
+        val actualLinks = result.elements.spread()
+            .filterIsInstance<Element.Link>()
+            .map { it.link }
+
+        assertEquals(expectedLink["titles"], actualTitles)
+        assertEquals(expectedLink["links"], actualLinks)
+
+        printResults(actualTitles)
+        printResults(actualLinks)
+        println("")
+        printElements(result.elements)
+    }
+
+    @Test
+    fun parse_all() {
+        val result = MarkdownParser.parse(markdownString)
+        val actualUnorderedList = prepare<Element.UnorderedListItem>(result.elements)
+        val actualHeaders = prepare<Element.Header>(result.elements)
+        val actualQuotes = prepare<Element.Quote>(result.elements)
+        val actualItalic = prepare<Element.Italic>(result.elements)
+        val actualBold = prepare<Element.Bold>(result.elements)
+        val actualStrike = prepare<Element.Strike>(result.elements)
+        val actualRule = prepare<Element.Rule>(result.elements)
+        val actualInline = prepare<Element.InlineCode>(result.elements)
+        val actualLinkTitles = prepare<Element.Link>(result.elements)
+        val actualLinks = result.elements.spread()
+            .filterIsInstance<Element.Link>()
+            .map { it.link }
+
+        Assert.assertEquals(expectedMarkdown["unorderedList"], actualUnorderedList)
+        Assert.assertEquals(expectedMarkdown["header"], actualHeaders)
+        Assert.assertEquals(expectedMarkdown["quote"], actualQuotes)
+        Assert.assertEquals(expectedMarkdown["italic"], actualItalic)
+        Assert.assertEquals(expectedMarkdown["bold"], actualBold)
+        Assert.assertEquals(expectedMarkdown["strike"], actualStrike)
+        Assert.assertEquals(3, actualRule.size)
+        Assert.assertEquals(expectedMarkdown["inline"], actualInline)
+        Assert.assertEquals(expectedMarkdown["linkTitles"], actualLinkTitles)
+        Assert.assertEquals(expectedMarkdown["links"], actualLinks)
     }
 
     private fun printResults(list: List<String>) {

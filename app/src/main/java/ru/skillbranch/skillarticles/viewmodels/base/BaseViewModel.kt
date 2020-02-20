@@ -1,11 +1,10 @@
 package ru.skillbranch.skillarticles.viewmodels.base
 
 import android.os.Bundle
-import android.view.AbsSavedState
 import androidx.annotation.UiThread
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
-import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
+
 
 abstract class BaseViewModel<T: IViewModelState>(initState: T) : ViewModel() {
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)

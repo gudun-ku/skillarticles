@@ -16,12 +16,13 @@ object MarkdownParser {
     private const val STRIKE_GROUP = "((?<!~)~{2}[^~].*?[^~]?~{2}(?!~))"
     private const val RULE_GROUP = "(^[-_*]{3}$)"
     private const val INLINE_GROUP = "((?<!`)`[^`\\s].*?[^`\\s]?`(?!`))"
+    private const val LINK_GROUP = "(\\[[^\\[\\]]*?]\\(.+?\\)|^[*?]\\(.*?\\))"
 
 
     // result regex
     private const val MARKDOWN_GROUPS = "$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP|$QUOTE_GROUP" +
                                         "|$ITALIC_GROUP|$BOLD_GROUP|$STRIKE_GROUP|$RULE_GROUP" +
-                                        "|$INLINE_GROUP"
+                                        "|$INLINE_GROUP|$LINK_GROUP"
 
     private val elementsPattern by lazy {
         Pattern.compile(MARKDOWN_GROUPS, Pattern.MULTILINE)
@@ -68,7 +69,7 @@ object MarkdownParser {
 
             // groups range info
 
-            val groups = 1..8
+            val groups = 1..9
 
             // every group
             var group = -1
@@ -164,6 +165,18 @@ object MarkdownParser {
                     parents.add(element)
                     lastStartIndex = endIndex
                 }
+
+                // LINK
+                9 -> {
+                    // full text for regex
+                    text = string.subSequence(startIndex, endIndex)
+                    val (title: String, link: String) = "\\[(.*)]\\((.*)\\)".toRegex().find(text)!!.destructured
+                    val element = Element.Link(link, title)
+                    parents.add(element)
+                    lastStartIndex = endIndex
+                }
+
+
             }
         }
 
@@ -227,4 +240,25 @@ sealed class Element() {
         override val text: CharSequence,
         override val elements: List<Element> = emptyList()
     ): Element()
+
+    data class Link(
+        val link: String,
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class OrderedListItem(
+        val order: String,
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element()
+
+    data class BlockCode(
+        val type: Type = Type.MIDDLE,
+        override val text: CharSequence,
+        override val elements: List<Element> = emptyList()
+    ): Element() {
+        enum class Type { START, END, MIDDLE, SINGLE }
+    }
+
 }

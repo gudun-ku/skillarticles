@@ -45,25 +45,5 @@ class EspressoTest {
         onView(
             withId(R.id.action_search)
         ).perform(click())
-
-//        Thread.sleep(300L)
-//        onView(
-//            withId(R.id.search_view)
-//        )
-//            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-//            .perform(typeText("Lor"))
-//
-//        onView(
-//            withId(R.id.group_bottom)
-//        ).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-//
-//        onView(
-//            withId(R.id.search_view)
-//        ).perform(clearText())
-//
-//        onView(
-//            withId(R.id.group_bottom)
-//        ).check(matches(withEffectiveVisibility(Visibility.GONE)))
-
     }
 }

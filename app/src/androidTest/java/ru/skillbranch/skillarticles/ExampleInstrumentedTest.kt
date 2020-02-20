@@ -117,7 +117,7 @@ class ExampleInstrumentedTest {
             isShowMenu = true,
             isBigText = true,
             isLoadingContent = false,
-            content = listOf("test content"),
+            content = "test content",
             isLike = true,
             isBookmark = true,
             title = "test title",
@@ -206,7 +206,7 @@ class ExampleInstrumentedTest {
         val searchResult = listOf(322 to 325, 930 to 933, 1032 to 1035, 1060 to 1063)
 
         scenario.onActivity { activity ->
-            activity.binding.bind(ArticleState().copy(content = listOf(content)))
+            activity.binding.bind(ArticleState().copy(content = content))
             activity.showSearchBar()
         }
         sleep(500)
