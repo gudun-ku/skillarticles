@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Selection
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
@@ -101,7 +102,8 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
                 .run {
                     tv_text_content.setText(this, TextView.BufferType.SPANNABLE)
                 }
-            tv_text_content.movementMethod = ScrollingMovementMethod()
+            //tv_text_content.movementMethod = ScrollingMovementMethod()
+            tv_text_content.movementMethod = LinkMovementMethod.getInstance()
         }
 
         override fun onFinishInflate() {

@@ -1,9 +1,6 @@
 package ru.skillbranch.skillarticles.markdown.spans
 
-import android.graphics.Canvas
-import android.graphics.DashPathEffect
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.text.style.ReplacementSpan
 import androidx.annotation.ColorInt
@@ -40,7 +37,25 @@ class IconLinkSpan(
         bottom: Int,
         paint: Paint
     ) {
-        //TODO implement me
+        val textStart = x + iconSize + padding
+        paint.forLine {
+            path.reset()
+            path.moveTo(textStart,bottom.toFloat())
+            path.lineTo(textStart + textWidth, bottom.toFloat())
+            canvas.drawPath(path, paint)
+        }
+
+        paint.forIcon {
+            canvas.save()
+            val trY = bottom - linkDrawable.bounds.bottom
+            canvas.translate(x, trY.toFloat())
+            linkDrawable.draw(canvas)
+            canvas.restore()
+        }
+
+        paint.forText {
+            canvas.drawText(text, start, end, textStart, y.toFloat(), paint)
+        }
     }
 
 
@@ -51,20 +66,55 @@ class IconLinkSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-        //TODO implement me
-        return 0
+
+        var size = 0
+        paint.forText {
+            val measureText = paint.measureText(text.toString(), start, end)
+            size = when(fm) {
+                null -> measureText
+                else -> (fm.descent - fm.ascent + padding + measureText)
+            }.toInt()
+        }
+        return size
     }
 
 
     private inline fun Paint.forLine(block: () -> Unit) {
-        //TODO implement me
+        val oldColor = color
+        val oldStyle = style
+        val oldWidth = strokeWidth
+
+        pathEffect = dashs
+        color = textColor
+        style = Paint.Style.STROKE
+        strokeWidth = 0f
+
+        block()
+
+        color = oldColor
+        style = oldStyle
+        strokeWidth = oldWidth
     }
 
     private inline fun Paint.forText(block: () -> Unit) {
-        //TODO implement me
+        val oldColor = color
+
+        color = textColor
+        block()
+
+        color = oldColor
     }
 
     private inline fun Paint.forIcon(block: () -> Unit) {
-        //TODO implement me
+        val oldColor = color
+        val oldStyle = style
+
+        color = textColor
+        style = Paint.Style.STROKE
+
+        block()
+
+        color = oldColor
+        style = oldStyle
     }
 }

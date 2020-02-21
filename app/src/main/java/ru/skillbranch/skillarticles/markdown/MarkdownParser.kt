@@ -42,9 +42,9 @@ object MarkdownParser {
      * clear markdown text to string without markdown characters
      */
 
-    fun clear(string: String) : String? {
+    fun clear(string: String?) : String? {
         // TODO - Homework part 1
-        return string.replace("//#", "")
+        return string?.replace("//#", "")
     }
 
     /**
