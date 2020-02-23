@@ -14,6 +14,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.text.clearSpans
 import androidx.core.text.getSpans
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
@@ -165,8 +166,10 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
     override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
         val content = tv_text_content.text as Spannable
 
-          // clear entry search result
+        // clear entry search result
         clearSearchResult()
+
+        //content.clearSpans()
 
         searchResult.forEach { (start, end) ->
             content.setSpan(

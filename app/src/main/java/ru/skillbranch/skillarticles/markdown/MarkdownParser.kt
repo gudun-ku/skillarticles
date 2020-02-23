@@ -1,6 +1,5 @@
 package ru.skillbranch.skillarticles.markdown
 
-import android.util.Log
 import java.util.regex.Pattern
 
 object MarkdownParser {
@@ -43,11 +42,42 @@ object MarkdownParser {
      */
 
     fun clear(string: String?) : String? {
-        // TODO - Homework part 1
-        return string?.replace("//#", "")
+        if (string.isNullOrEmpty()) return null
+
+        val mdText = parse(string)
+        if (string.isNullOrEmpty()) return null
+        var resultString = ""
+        val textList = mdText.elements.fold(mutableListOf<Element>()){ acc, el -> //spread inner elements
+            acc.also { it.addAll(el.spread()) }
+        }
+            .map { it.text.toString() }
+
+        textList.forEach {
+               resultString += it
+            }
+
+        return resultString
     }
 
-    /**
+    private fun Element.spread():List<Element>{
+        val elements = mutableListOf<Element>()
+        if (this.elements.isEmpty()) {
+            elements.add(this)
+        } else {
+            elements.addAll(this.elements.spread())
+        }
+        return elements
+    }
+
+    private fun List<Element>.spread():List<Element>{
+        val elements = mutableListOf<Element>()
+        if(this.isNotEmpty()) elements.addAll(
+            this.fold(mutableListOf()){acc, el -> acc.also { it.addAll(el.spread()) }}
+        )
+        return elements
+    }
+
+     /**
      * find markdown elements in markdown text
      */
     private fun findElements(string: CharSequence):List<Element> {
@@ -99,7 +129,6 @@ object MarkdownParser {
                 2 -> {
                     val reg = "^#{1,6}".toRegex().find(string.subSequence(startIndex, endIndex))
                     val level = reg!!.value.length
-
                     // text without "{#} "
                     text = string.subSequence(startIndex.plus(level.inc()), endIndex)
                     val element = Element.Header(level, text)
@@ -191,7 +220,7 @@ object MarkdownParser {
 
 data class MarkdownText(val elements: List<Element>)
 
-sealed class Element() {
+sealed class Element {
     abstract val text: CharSequence
     abstract val elements: List<Element>
 

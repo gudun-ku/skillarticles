@@ -147,10 +147,10 @@ class HeaderSpan constructor(
         drawLine(0f, bottom + 0f, width + 0f, bottom + 0f, Paint().apply { color = Color.GREEN })
         // baseline
         drawLine(0f, lineBaseline + 0f, width + 0f, lineBaseline + 0f, Paint().apply { color = Color.RED })
-//        // ascent
-//        drawLine(0f, paint.ascent() + lineBaseline + 0f, width + 0f, paint.ascent() + lineBaseline + 0f, Paint().apply { color = Color.CYAN })
-//        // descent
-//        drawLine(0f, paint.descent() + lineBaseline + 0f, width + 0f, paint.descent() + lineBaseline + 0f, Paint().apply { color = Color.MAGENTA })
+        // ascent
+        drawLine(0f, paint.ascent() + lineBaseline + 0f, width + 0f, paint.ascent() + lineBaseline + 0f, Paint().apply { color = Color.CYAN })
+        // descent
+        drawLine(0f, paint.descent() + lineBaseline + 0f, width + 0f, paint.descent() + lineBaseline + 0f, Paint().apply { color = Color.MAGENTA })
 
     }
 }

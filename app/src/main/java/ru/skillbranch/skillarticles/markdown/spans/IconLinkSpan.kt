@@ -66,16 +66,13 @@ class IconLinkSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-
-        var size = 0
-        paint.forText {
-            val measureText = paint.measureText(text.toString(), start, end)
-            size = when(fm) {
-                null -> measureText
-                else -> (fm.descent - fm.ascent + padding + measureText)
-            }.toInt()
+        if (fm != null) {
+            iconSize = fm.descent - fm.ascent //fontSize
+            linkDrawable.setBounds(0,0, iconSize, iconSize)
+            linkDrawable.setTint(iconColor)
         }
-        return size
+        textWidth = paint.measureText(text.toString(), start, end)
+        return (iconSize + padding + textWidth).toInt()
     }
 
 

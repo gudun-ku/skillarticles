@@ -413,27 +413,6 @@ class InstrumentedTestHometask5 {
             lbase.toFloat(), paint)
         inOrder.verify(paint).color = defaultColor
 
-
-//        // check draw inline code
-//        span.draw(canvas, text, 0, text.length, cml.toFloat(), ltop, lbase, lbottom, paint)
-//
-//        val inOrder = inOrder(paint, canvas)
-//
-//        inOrder.verify(paint).color = bgColor
-//        inOrder.verify(canvas).drawRoundRect(
-//            RectF(0f,ltop.toFloat(),measureText + 2*padding, lbottom.toFloat()),
-//            cornerRadius,
-//            cornerRadius, paint
-//        )
-//
-//        // check draw text
-//        inOrder.verify(paint).color = textColor
-//        inOrder.verify(canvas).drawText(text, 0, text.length, cml + padding, lbase.toFloat(), paint)
-//
-//        inOrder.verify(paint).color = defaultColor
     }
-
-
-
 
 }

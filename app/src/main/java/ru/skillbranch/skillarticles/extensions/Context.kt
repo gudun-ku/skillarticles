@@ -24,8 +24,8 @@ fun Context.dpToIntPx(dp: Int): Int {
     ).toInt()
 }
 
-internal fun Context.attrValue(resId: Int): Int {
-    var typedValue = TypedValue()
+fun Context.attrValue(resId: Int): Int {
+    val typedValue = TypedValue()
     if (theme.resolveAttribute(resId, typedValue, true)) {
         return typedValue.data
     } else {
