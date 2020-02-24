@@ -102,7 +102,15 @@ class MarkdownBuilder(context: Context) {
 
                 is Element.Link -> {
                     inSpans(IconLinkSpan(linkIcon,colorSecondary,gap,colorPrimary,strikeWidth),
-                        URLSpan(element.link)){
+                        URLSpan(element.link)
+                    ){
+                        append(element.text)
+                    }
+                }
+
+                is Element.OrderedListItem -> {
+                    inSpans(OrderedListSpan(gap,element.order,colorPrimary))
+                    {
                         append(element.text)
                     }
                 }

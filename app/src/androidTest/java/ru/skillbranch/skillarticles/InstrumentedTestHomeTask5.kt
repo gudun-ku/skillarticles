@@ -358,7 +358,6 @@ class InstrumentedTestHometask5 {
             ArgumentMatchers.anyInt(),
             ArgumentMatchers.anyInt()
         )).thenReturn(measureText)
-        val layout = mock(Layout::class.java)
         val fm = mock(Paint.FontMetricsInt::class.java)
         fm.ascent = defaultAscent
         fm.descent = defaultDescent
