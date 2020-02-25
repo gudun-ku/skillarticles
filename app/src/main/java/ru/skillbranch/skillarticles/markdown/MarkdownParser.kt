@@ -17,12 +17,14 @@ object MarkdownParser {
     private const val INLINE_GROUP = "((?<!`)`[^`\\s].*?[^`\\s]?`(?!`))"
     private const val LINK_GROUP = "(\\[[^\\[\\]]*?]\\(.+?\\)|^[*?]\\(.*?\\))"
     private const val ORDERED_LIST_ITEM_GROUP = "(^\\d+\\. .+\$)"
+    private const val MULTILINE_CODE_GROUP = "((?<!`)`{3}[^`\\s](.|\\n|\\r\\n)*?[^`\\s]?`{3}(?!`))"
 
 
     // result regex
     private const val MARKDOWN_GROUPS = "$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP|$QUOTE_GROUP" +
                                         "|$ITALIC_GROUP|$BOLD_GROUP|$STRIKE_GROUP|$RULE_GROUP" +
-                                        "|$INLINE_GROUP|$LINK_GROUP|$ORDERED_LIST_ITEM_GROUP"
+                                        "|$INLINE_GROUP|$LINK_GROUP|$ORDERED_LIST_ITEM_GROUP" +
+                                        "|$MULTILINE_CODE_GROUP"
 
     private val elementsPattern by lazy {
         Pattern.compile(MARKDOWN_GROUPS, Pattern.MULTILINE)
@@ -100,7 +102,7 @@ object MarkdownParser {
 
             // groups range info
 
-            val groups = 1..10
+            val groups = 1..11
 
             // every group
             var group = -1
@@ -217,8 +219,39 @@ object MarkdownParser {
                     lastStartIndex = endIndex
                 }
 
+                // MULTILINE CODE BLOCK
+                11 -> {
+
+                    // line by line
+                    val fullText = string.subSequence(startIndex, endIndex)
+                    val blockStrings = fullText.split("\n")
+                    for (str in blockStrings) {
+                        val rStart = "(^`{3})".toRegex().find(str)
+                        val rEnd =   "(`{3}\$)".toRegex().find(str)
+                        if (rStart != null && rEnd != null) {
+                            // SINGLE
+                            val elText = str.subSequence(3,str.length -3)
+                            parents.add(Element.BlockCode(Element.BlockCode.Type.SINGLE, elText))
+                        } else if (rStart != null && rEnd == null) {
+                            // START
+                            val elText = str.subSequence(3,str.length)
+                            parents.add(Element.BlockCode(Element.BlockCode.Type.START, "$elText\n"))
+                        } else if (rStart == null && rEnd != null) {
+                            // START
+                            val elText = str.subSequence(0,str.length -3)
+                            parents.add(Element.BlockCode(Element.BlockCode.Type.END, elText))
+                        } else {
+                            // MIDDLE
+                            parents.add(Element.BlockCode(text = "$str\n"))
+                        }
+                    }
+
+                   lastStartIndex = endIndex
+                }
 
             }
+
+
         }
 
         if (lastStartIndex < string.length) {
