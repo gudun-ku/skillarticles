@@ -20,7 +20,7 @@ class MarkdownBuilder(context: Context) {
     private val colorDivider = context.getColor(R.color.color_divider)
     private val colorOnSurface = context.attrValue(R.attr.colorOnSurface)
     private val colorSurface = context.attrValue(R.attr.colorSurface)
-    private val colorText = context.getColor(R.color.color_divider)
+    private val colorText = context.getColor(android.R.color.tab_indicator_text)
     private val gap: Float = context.dpToPx(8)
     private val bulletRadius = context.dpToPx(4)
     private val strikeWidth = context.dpToPx(4)
@@ -116,7 +116,11 @@ class MarkdownBuilder(context: Context) {
                     }
                 }
 
-
+                is Element.BlockCode -> {
+                    inSpans(BlockCodeSpan(colorOnSurface,colorSurface,cornerRadius,gap,element.type)){
+                        append(element.text)
+                    }
+                }
 
                 else -> append(element.text)
             }
