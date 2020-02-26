@@ -1,9 +1,13 @@
 package ru.skillbranch.skillarticles.markdown.spans
 
 import android.graphics.*
+import android.text.Layout
 import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.LeadingMarginSpan
 import android.text.style.LineHeightSpan
 import android.text.style.ReplacementSpan
+import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.annotation.VisibleForTesting
@@ -20,69 +24,11 @@ class BlockCodeSpan(
     @Px
     private val padding: Float,
     private val type: Element.BlockCode.Type
-) : LineHeightSpan,ReplacementSpan() {
+) : ReplacementSpan() {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var rect = RectF()
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var path = Path()
-
-    private var originAscent = 0
-    private var originDescent = 0
-    private var originTop = 0
-    private var originBottom = 0
-    private var originHeight = 0
-
-    override fun chooseHeight(
-        text: CharSequence?,
-        start: Int,
-        end: Int,
-        spanstartv: Int,
-        lineHeight: Int,
-        fm: Paint.FontMetricsInt?
-    ) {
-        fm ?: return
-        text as Spanned
-
-        originAscent = fm.ascent
-        originDescent = fm.descent
-        originTop = fm.top
-        originBottom = fm.bottom
-        originHeight = fm.descent - originAscent
-
-        when (type) {
-            Element.BlockCode.Type.SINGLE -> {
-                //check lineHeight SINGLE type
-                fm.ascent = (originAscent * 0.85f - 2 * padding).toInt()
-                fm.descent = (originDescent * 0.85f + 2 * padding).toInt()
-                fm.top = originTop + fm.ascent
-                fm.bottom = originBottom + fm.descent
-            }
-
-            Element.BlockCode.Type.START -> {
-                //check lineHeight SINGLE type
-                fm.ascent = (originAscent * 0.85f - 2 * padding).toInt()
-                fm.descent = (originAscent * 0.85f).toInt()
-                fm.top = originTop + fm.ascent
-                fm.bottom = originBottom + fm.descent
-            }
-
-            Element.BlockCode.Type.MIDDLE -> {
-                //check lineHeight SINGLE type
-                fm.ascent = (originAscent * 0.85f).toInt()
-                fm.descent = (originAscent * 0.85f).toInt()
-                fm.top = originTop + fm.ascent
-                fm.bottom = originBottom + fm.descent
-            }
-
-            Element.BlockCode.Type.END -> {
-                //check lineHeight SINGLE type
-                fm.ascent = (originAscent * 0.85f).toInt()
-                fm.descent = (originDescent * 0.85f + 2 * padding).toInt()
-                fm.top = originTop + fm.ascent
-                fm.bottom = originBottom + fm.descent
-            }
-        }
-    }
 
     override fun draw(
         canvas: Canvas,
@@ -95,6 +41,7 @@ class BlockCodeSpan(
         bottom: Int,
         paint: Paint
     ) {
+
         when(type) {
             Element.BlockCode.Type.SINGLE ->
                 paint.forBackground {
@@ -106,7 +53,7 @@ class BlockCodeSpan(
             Element.BlockCode.Type.START ->
                 paint.forBackground {
                     rect.set(0f , top.toFloat() + padding,
-                        x + canvas.width , bottom.toFloat() - originDescent )
+                        x + canvas.width , bottom.toFloat())
                     canvas.drawCornerRoundRect(rect, paint, cornerRadius, cornerRadius)
                 }
 
@@ -119,7 +66,7 @@ class BlockCodeSpan(
 
             Element.BlockCode.Type.END ->
                 paint.forBackground {
-                    rect.set(0f , top.toFloat() + originAscent, x + canvas.width,
+                    rect.set(0f , top.toFloat(), x + canvas.width,
                         bottom.toFloat() - padding)
                     canvas.drawCornerRoundRect(rect, paint, 0f , 0f ,
                         cornerRadius, cornerRadius)
@@ -139,7 +86,35 @@ class BlockCodeSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-        return end - start
+        fm ?: return 0
+        text as Spanned
+
+        val defaultAscent = paint.ascent()
+        val defaultDescent = paint.descent()
+
+
+        when (type) {
+            Element.BlockCode.Type.SINGLE -> {
+                fm.ascent = (defaultAscent* 0.85f - 2 * padding).toInt()
+                fm.descent = (defaultDescent * 0.85f + 2 * padding).toInt()
+            }
+
+            Element.BlockCode.Type.START -> {
+                fm.ascent = (defaultAscent * 0.85f - 2 * padding).toInt()
+                fm.descent = (defaultDescent * 0.85f).toInt()
+            }
+
+            Element.BlockCode.Type.MIDDLE -> {
+                fm.ascent = (defaultAscent * 0.85f).toInt()
+                fm.descent = (defaultDescent * 0.85f).toInt()
+            }
+
+            Element.BlockCode.Type.END -> {
+                fm.ascent = (defaultAscent * 0.85f).toInt()
+                fm.descent = (defaultDescent * 0.85f + 2 * padding).toInt()
+            }
+        }
+        return 0
     }
 
     private fun Canvas.drawCornerRoundRect(rect: RectF, paint: Paint, topLeftRadius:Float = 0f,
@@ -160,6 +135,7 @@ class BlockCodeSpan(
         path.close()
 
     }
+
 
     private inline fun Paint.forText(block: () -> Unit) {
         val oldSize = textSize
@@ -192,4 +168,5 @@ class BlockCodeSpan(
         style = oldStyle
         path = oldPath
     }
+
 }
