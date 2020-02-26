@@ -231,15 +231,15 @@ object MarkdownParser {
                         if (rStart != null && rEnd != null) {
                             // SINGLE
                             val elText = str.subSequence(3,str.length -3)
-                            parents.add(Element.BlockCode(Element.BlockCode.Type.SINGLE, elText))
+                            parents.add(Element.BlockCode(Element.BlockCode.Type.SINGLE, "$elText"))
                         } else if (rStart != null && rEnd == null) {
                             // START
                             val elText = str.subSequence(3,str.length)
                             parents.add(Element.BlockCode(Element.BlockCode.Type.START, "$elText\n"))
                         } else if (rStart == null && rEnd != null) {
-                            // START
+                            // END
                             val elText = str.subSequence(0,str.length -3)
-                            parents.add(Element.BlockCode(Element.BlockCode.Type.END, elText))
+                            parents.add(Element.BlockCode(Element.BlockCode.Type.END, "$elText"))
                         } else {
                             // MIDDLE
                             parents.add(Element.BlockCode(text = "$str\n"))
@@ -250,7 +250,6 @@ object MarkdownParser {
                 }
 
             }
-
 
         }
 

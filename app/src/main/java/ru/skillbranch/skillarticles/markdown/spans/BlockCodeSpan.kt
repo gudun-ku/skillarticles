@@ -2,12 +2,9 @@ package ru.skillbranch.skillarticles.markdown.spans
 
 import android.graphics.*
 import android.text.Layout
-import android.text.Spanned
-import android.text.TextPaint
+import android.text.SpannableString
 import android.text.style.LeadingMarginSpan
-import android.text.style.LineHeightSpan
 import android.text.style.ReplacementSpan
-import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.annotation.VisibleForTesting
@@ -24,11 +21,23 @@ class BlockCodeSpan(
     @Px
     private val padding: Float,
     private val type: Element.BlockCode.Type
-) : ReplacementSpan() {
+) : LeadingMarginSpan,ReplacementSpan() {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var rect = RectF()
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var path = Path()
+
+    override fun getLeadingMargin(first: Boolean): Int {
+        return 0
+    }
+
+    override fun drawLeadingMargin(
+        canvas: Canvas, paint: Paint, currentMarginLocation: Int, paragraphDirection: Int,
+        lineTop: Int, lineBaseline: Int, lineBottom: Int, text: CharSequence?, lineStart: Int,
+        lineEnd: Int, isFirstLine: Boolean, layout: Layout?
+    ) {
+        //canvas.drawFontLines(lineTop, lineBottom, lineBaseline, paint)
+    }
 
     override fun draw(
         canvas: Canvas,
@@ -75,7 +84,7 @@ class BlockCodeSpan(
         }
 
         paint.forText {
-            canvas.drawText(text, start, end, x + padding, y.toFloat(), paint)
+            canvas.drawText(text as SpannableString, start, end, x + padding, y.toFloat(), paint)
         }
     }
 
@@ -87,31 +96,29 @@ class BlockCodeSpan(
         fm: Paint.FontMetricsInt?
     ): Int {
         fm ?: return 0
-        text as Spanned
 
-        val defaultAscent = paint.ascent()
-        val defaultDescent = paint.descent()
-
+        fm.ascent = paint.ascent().toInt()
+        fm.descent = paint.descent().toInt()
 
         when (type) {
             Element.BlockCode.Type.SINGLE -> {
-                fm.ascent = (defaultAscent* 0.85f - 2 * padding).toInt()
-                fm.descent = (defaultDescent * 0.85f + 2 * padding).toInt()
+                fm.ascent = (fm.ascent*0.85 - 2 * padding).toInt()
+                fm.descent = (fm.descent*0.85 + 2 * padding).toInt()
             }
 
             Element.BlockCode.Type.START -> {
-                fm.ascent = (defaultAscent * 0.85f - 2 * padding).toInt()
-                fm.descent = (defaultDescent * 0.85f).toInt()
+                fm.ascent = (fm.ascent*0.85  - 2 * padding).toInt()
+                fm.descent = (fm.descent*0.85).toInt()
             }
 
             Element.BlockCode.Type.MIDDLE -> {
-                fm.ascent = (defaultAscent * 0.85f).toInt()
-                fm.descent = (defaultDescent * 0.85f).toInt()
+                fm.ascent = (fm.ascent*0.85).toInt()
+                fm.descent = (fm.descent*0.85).toInt()
             }
 
             Element.BlockCode.Type.END -> {
-                fm.ascent = (defaultAscent * 0.85f).toInt()
-                fm.descent = (defaultDescent * 0.85f + 2 * padding).toInt()
+                fm.ascent = (fm.ascent*0.85).toInt()
+                fm.descent = (fm.descent*0.85 + 2 * padding).toInt()
             }
         }
         return 0
@@ -143,15 +150,16 @@ class BlockCodeSpan(
         val oldFont = typeface
         val oldColor = color
 
+        textSize *= 0.85f
         color = textColor
         typeface = Typeface.create(Typeface.MONOSPACE, oldStyle)
-        textSize *= 0.85f
 
         block()
 
         color = oldColor
-        typeface= oldFont
+        typeface = oldFont
         textSize = oldSize
+
     }
 
     private inline fun Paint.forBackground(block: () -> Unit) {
@@ -167,6 +175,26 @@ class BlockCodeSpan(
         color = oldColor
         style = oldStyle
         path = oldPath
+    }
+
+    // helper function
+    private fun Canvas.drawFontLines(
+        top: Int,
+        bottom: Int,
+        lineBaseline: Int,
+        paint: Paint
+    ) {
+        // top font line
+        drawLine(0f, top + 0f, width + 0f, top + 0f, Paint().apply { color = Color.RED })
+        // bottom font line
+        drawLine(0f, bottom + 0f, width + 0f, bottom + 0f, Paint().apply { color = Color.GREEN })
+        // baseline
+        drawLine(0f, lineBaseline + 0f, width + 0f, lineBaseline + 0f, Paint().apply { color = Color.BLACK })
+        // ascent
+        drawLine(0f, paint.ascent() + lineBaseline + 0f, width + 0f, paint.ascent() + lineBaseline + 0f, Paint().apply { color = Color.CYAN })
+        // descent
+        drawLine(0f, paint.descent() + lineBaseline + 0f, width + 0f, paint.descent() + lineBaseline + 0f, Paint().apply { color = Color.MAGENTA })
+
     }
 
 }
