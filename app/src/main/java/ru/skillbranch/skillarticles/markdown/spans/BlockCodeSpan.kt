@@ -166,6 +166,7 @@ class BlockCodeSpan(
         color = oldColor
         typeface = oldFont
         textSize = oldSize
+
         fontMetricsInt?.apply {
             ascent = originAscent
             descent = originDescent
