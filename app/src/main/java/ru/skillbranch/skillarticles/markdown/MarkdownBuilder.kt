@@ -2,6 +2,7 @@ package ru.skillbranch.skillarticles.markdown
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.SpannedString
 import android.text.style.StrikethroughSpan
@@ -117,13 +118,28 @@ class MarkdownBuilder(context: Context) {
                 }
 
                 is Element.BlockCode -> {
-                    inSpans(BlockCodeSpan(colorOnSurface,colorSurface,cornerRadius,gap,element.type)){
+                    inSpansEx(BlockCodeSpan(colorOnSurface,colorSurface,cornerRadius,gap,element.type))
+                    {
                         append(element.text)
                     }
+
                 }
 
                 else -> append(element.text)
             }
         }
+    }
+
+    private inline fun SpannableStringBuilder.inSpansEx(
+        span: Any,
+        builderAction: SpannableStringBuilder.() -> Unit
+    ): SpannableStringBuilder {
+        val start = length
+        builderAction()
+        if (get(length-1) == '\n') {
+            setSpan(span, start, length.dec(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else
+            setSpan(span, start, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return this
     }
 }
