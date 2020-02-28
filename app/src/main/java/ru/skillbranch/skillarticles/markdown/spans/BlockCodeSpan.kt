@@ -54,49 +54,49 @@ class BlockCodeSpan(
         originAscent = fm.ascent//paint.ascent().toInt()
         originDescent = fm.descent//paint.descent().toInt()
 
-//        when (type) {
-//            Element.BlockCode.Type.SINGLE -> {
-//                fm.ascent = (originAscent - 2 * padding).toInt()  + 5
-//                fm.descent = (originDescent + 2 * padding).toInt() - 2
-//            }
-//
-//            Element.BlockCode.Type.START -> {
-//                fm.ascent = originAscent
-//                fm.descent = (originDescent - 2 * padding).toInt()
-//            }
-//
-//            Element.BlockCode.Type.MIDDLE -> {
-//                fm.ascent = (originAscent).toInt() + 5
-//                fm.descent = (originDescent - 2).toInt()
-//            }
-//
-//            Element.BlockCode.Type.END -> {
-//                fm.ascent = (originAscent).toInt() + 5
-//                fm.descent = (originDescent + 2 * padding).toInt() - 2
-//            }
-//        }
-
         when (type) {
             Element.BlockCode.Type.SINGLE -> {
-                fm.ascent = (originAscent - 2 * padding).toInt()
-                fm.descent = (originDescent + 2 * padding).toInt()
+                fm.ascent = (originAscent - 2 * padding).toInt()  + 5
+                fm.descent = (originDescent + 2 * padding).toInt() - 2
             }
 
             Element.BlockCode.Type.START -> {
-                fm.ascent = (originAscent - 2 * padding).toInt()
-                fm.descent = originDescent
+                fm.ascent = originAscent
+                fm.descent = (originDescent - 2 * padding).toInt()
             }
 
             Element.BlockCode.Type.MIDDLE -> {
-                fm.ascent = originAscent
-                fm.descent = originDescent
+                fm.ascent = (originAscent).toInt() + 5
+                fm.descent = (originDescent - 2).toInt()
             }
 
             Element.BlockCode.Type.END -> {
-                fm.ascent = originAscent
+                fm.ascent = (originAscent).toInt() + 5
                 fm.descent = (originDescent + 2 * padding).toInt() - 2
             }
         }
+
+//        when (type) {
+//            Element.BlockCode.Type.SINGLE -> {
+//                fm.ascent = (originAscent - 2 * padding).toInt()
+//                fm.descent = (originDescent + 2 * padding).toInt()
+//            }
+//
+//            Element.BlockCode.Type.START -> {
+//                fm.ascent = (originAscent - 2 * padding).toInt()
+//                fm.descent = originDescent
+//            }
+//
+//            Element.BlockCode.Type.MIDDLE -> {
+//                fm.ascent = originAscent
+//                fm.descent = originDescent
+//            }
+//
+//            Element.BlockCode.Type.END -> {
+//                fm.ascent = originAscent
+//                fm.descent = (originDescent + 2 * padding).toInt() - 2
+//            }
+//        }
 
         return 0
     }
