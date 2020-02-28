@@ -135,10 +135,16 @@ class MarkdownBuilder(context: Context) {
     ): SpannableStringBuilder {
         val start = length
         builderAction()
+
+        var useStart = start
+        var useLength = length
         if (get(length-1) == '\n') {
-            setSpan(span, start, length.dec(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } else
-            setSpan(span, start, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            useLength -= 1
+        }
+        if (get(start) == '\n') {
+            useStart += 1
+        }
+        setSpan(span, useStart, useLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return this
     }
 }

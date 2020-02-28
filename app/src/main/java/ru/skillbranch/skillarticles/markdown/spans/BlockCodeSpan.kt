@@ -54,49 +54,49 @@ class BlockCodeSpan(
         originAscent = fm.ascent//paint.ascent().toInt()
         originDescent = fm.descent//paint.descent().toInt()
 
-        when (type) {
-            Element.BlockCode.Type.SINGLE -> {
-                fm.ascent = (originAscent - 2 * padding).toInt()  + 5
-                fm.descent = (originDescent + 2 * padding).toInt() - 2
-            }
-
-            Element.BlockCode.Type.START -> {
-                fm.ascent = originAscent
-                fm.descent = (originDescent - 2 * padding).toInt()
-            }
-
-            Element.BlockCode.Type.MIDDLE -> {
-                fm.ascent = (originAscent).toInt() + 5
-                fm.descent = (originDescent - 2).toInt()
-            }
-
-            Element.BlockCode.Type.END -> {
-                fm.ascent = (originAscent).toInt() + 5
-                fm.descent = (originDescent + 2 * padding).toInt() - 2
-            }
-        }
-
 //        when (type) {
 //            Element.BlockCode.Type.SINGLE -> {
-//                fm.ascent = (originAscent - 2 * padding).toInt()
-//                fm.descent = (originDescent + 2 * padding).toInt()
+//                fm.ascent = (originAscent - 2 * padding).toInt()  - (fm.ascent - paint.ascent().toInt())
+//                fm.descent = (originDescent + 2 * padding).toInt() - (fm.descent - paint.descent().toInt())
 //            }
 //
 //            Element.BlockCode.Type.START -> {
-//                fm.ascent = (originAscent - 2 * padding).toInt()
-//                fm.descent = originDescent
+//                fm.ascent = originAscent
+//                fm.descent = (originDescent - 2 * padding).toInt()
 //            }
 //
 //            Element.BlockCode.Type.MIDDLE -> {
-//                fm.ascent = originAscent
-//                fm.descent = originDescent
+//                fm.ascent = originAscent- (fm.ascent - paint.ascent().toInt())
+//                fm.descent =  originDescent - (fm.descent - paint.descent().toInt())
 //            }
 //
 //            Element.BlockCode.Type.END -> {
-//                fm.ascent = originAscent
-//                fm.descent = (originDescent + 2 * padding).toInt() - 2
+//                fm.ascent = originAscent - (fm.ascent - paint.ascent().toInt())
+//                fm.descent = (originDescent + 2 * padding).toInt() - (fm.descent - paint.descent().toInt())
 //            }
 //        }
+
+        when (type) {
+            Element.BlockCode.Type.SINGLE -> {
+                fm.ascent = (originAscent - 2 * padding).toInt()
+                fm.descent = (originDescent + 2 * padding).toInt()
+            }
+
+            Element.BlockCode.Type.START -> {
+                fm.ascent = (originAscent - 2 * padding).toInt()
+                fm.descent = originDescent
+            }
+
+            Element.BlockCode.Type.MIDDLE -> {
+                fm.ascent = originAscent
+                fm.descent = originDescent
+            }
+
+            Element.BlockCode.Type.END -> {
+                fm.ascent = originAscent
+                fm.descent = (originDescent + 2 * padding).toInt()
+            }
+        }
 
         return 0
     }
@@ -151,26 +151,6 @@ class BlockCodeSpan(
 
     }
 
-
-    private fun Canvas.drawCornerRoundRect(rect: RectF, paint: Paint, topLeftRadius:Float = 0f,
-                                           topRightRadius:Float = 0f, bottomLeftRadius:Float = 0f,
-                                           bottomRightRadius:Float = 0f) {
-
-        path.reset()
-        path.moveTo(rect.left + topLeftRadius, rect.top)
-        path.lineTo(rect.right - topRightRadius, rect.top)
-        path.quadTo(rect.right, rect.top, rect.right, rect.top + topRightRadius)
-        path.lineTo(rect.right, rect.bottom - bottomRightRadius)
-        path.quadTo(rect.right, rect.bottom, rect.right - bottomRightRadius, rect.bottom)
-        path.lineTo(rect.left + bottomLeftRadius, rect.bottom)
-        path.quadTo(rect.left, rect.bottom, rect.left, rect.bottom - bottomLeftRadius)
-        path.lineTo(rect.left, rect.top + topLeftRadius)
-        path.quadTo(rect.left, rect.top, rect.left + topLeftRadius / 2, rect.top)
-        drawPath(path, paint)
-        path.close()
-
-    }
-
     private fun Canvas.drawCustomRoundRect(rect: RectF, paint: Paint, topLeftRadius:Float = 0f,
                                            topRightRadius:Float = 0f, bottomLeftRadius:Float = 0f,
                                            bottomRightRadius:Float = 0f) {
@@ -187,8 +167,6 @@ class BlockCodeSpan(
         )
         drawPath(path, paint)
     }
-
-
 
     private inline fun Paint.forText(block: () -> Unit) {
         val oldSize = textSize
