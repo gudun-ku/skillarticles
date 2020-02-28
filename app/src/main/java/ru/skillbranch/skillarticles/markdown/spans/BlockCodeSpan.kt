@@ -3,9 +3,7 @@ package ru.skillbranch.skillarticles.markdown.spans
 import android.graphics.*
 import android.text.Layout
 import android.text.SpannableString
-import android.text.Spanned
 import android.text.style.LeadingMarginSpan
-import android.text.style.LineHeightSpan
 import android.text.style.ReplacementSpan
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
@@ -53,8 +51,8 @@ class BlockCodeSpan(
     ): Int {
         fm ?: return 0
 
-        originAscent = fm.ascent
-        originDescent = fm.descent
+        originAscent = paint.ascent().toInt()
+        originDescent = paint.descent().toInt()
 
         when (type) {
             Element.BlockCode.Type.SINGLE -> {
@@ -166,11 +164,6 @@ class BlockCodeSpan(
         color = oldColor
         typeface = oldFont
         textSize = oldSize
-
-        fontMetricsInt?.apply {
-            ascent = originAscent
-            descent = originDescent
-        }
 
     }
 

@@ -122,7 +122,6 @@ class MarkdownBuilder(context: Context) {
                     {
                         append(element.text)
                     }
-
                 }
 
                 else -> append(element.text)
