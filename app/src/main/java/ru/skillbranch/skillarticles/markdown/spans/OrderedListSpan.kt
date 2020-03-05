@@ -30,14 +30,14 @@ class OrderedListSpan(
     ) {
         // only for the first line draw order string
         if(isFirstLine) {
-            paint.forText {
+            paint.withCustomColor {
                 canvas.drawText(order, gapWidth + currentMarginLocation,
                     lineBaseline.toFloat(), paint)
             }
         }
     }
 
-    private inline fun Paint.forText(block: () -> Unit) {
+    private inline fun Paint.withCustomColor(block: () -> Unit) {
         val oldColor = color
 
         color = orderColor

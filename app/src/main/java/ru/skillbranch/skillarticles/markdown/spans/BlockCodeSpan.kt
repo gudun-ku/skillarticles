@@ -27,8 +27,6 @@ class BlockCodeSpan(
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var path = Path()
 
-    private var originAscent = 0
-    private var originDescent = 0
 
     override fun getLeadingMargin(first: Boolean): Int {
         return 0
@@ -51,30 +49,8 @@ class BlockCodeSpan(
     ): Int {
         fm ?: return 0
 
-        originAscent = fm.ascent//paint.ascent().toInt()
-        originDescent = fm.descent//paint.descent().toInt()
-
-//        when (type) {
-//            Element.BlockCode.Type.SINGLE -> {
-//                fm.ascent = (originAscent - 2 * padding).toInt()  - (fm.ascent - paint.ascent().toInt())
-//                fm.descent = (originDescent + 2 * padding).toInt() - (fm.descent - paint.descent().toInt())
-//            }
-//
-//            Element.BlockCode.Type.START -> {
-//                fm.ascent = originAscent
-//                fm.descent = (originDescent - 2 * padding).toInt()
-//            }
-//
-//            Element.BlockCode.Type.MIDDLE -> {
-//                fm.ascent = originAscent- (fm.ascent - paint.ascent().toInt())
-//                fm.descent =  originDescent - (fm.descent - paint.descent().toInt())
-//            }
-//
-//            Element.BlockCode.Type.END -> {
-//                fm.ascent = originAscent - (fm.ascent - paint.ascent().toInt())
-//                fm.descent = (originDescent + 2 * padding).toInt() - (fm.descent - paint.descent().toInt())
-//            }
-//        }
+        val originAscent = paint.ascent()
+        val originDescent = paint.descent()
 
         when (type) {
             Element.BlockCode.Type.SINGLE -> {
@@ -84,19 +60,23 @@ class BlockCodeSpan(
 
             Element.BlockCode.Type.START -> {
                 fm.ascent = (originAscent - 2 * padding).toInt()
-                fm.descent = originDescent
+                fm.descent = originDescent.toInt()
             }
 
             Element.BlockCode.Type.MIDDLE -> {
-                fm.ascent = originAscent
-                fm.descent = originDescent
+                fm.ascent = originAscent.toInt()
+                fm.descent = originDescent.toInt()
             }
 
             Element.BlockCode.Type.END -> {
-                fm.ascent = originAscent
+                fm.ascent = originAscent.toInt()
                 fm.descent = (originDescent + 2 * padding).toInt()
             }
+
         }
+
+        fm.top = fm.ascent
+        fm.bottom = fm.descent
 
         return 0
     }

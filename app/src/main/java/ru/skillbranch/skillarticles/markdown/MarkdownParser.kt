@@ -213,38 +213,44 @@ object MarkdownParser {
                     val reg = "^(^\\d+\\.)".toRegex().find(string.subSequence(startIndex, endIndex))
                     val order = reg!!.value
                     // text without "X. "
-                    text = string.subSequence(startIndex.plus(order.length + 1), endIndex)
-                    val element = Element.OrderedListItem(order, text)
+                    text = string.subSequence(startIndex.plus(order.length.inc()), endIndex)
+
+                    val subs = findElements(text)
+                    val element = Element.OrderedListItem(order, text.toString(), subs)
                     parents.add(element)
+
                     lastStartIndex = endIndex
                 }
 
                 // MULTILINE CODE BLOCK
                 11 -> {
-
                     // line by line
-                    val fullText = string.subSequence(startIndex, endIndex)
-                    val blockStrings = fullText.split("\n")
-                    for (str in blockStrings) {
-                        val rStart = "(^`{3})".toRegex().find(str)
-                        val rEnd =   "(`{3}\$)".toRegex().find(str)
-                        if (rStart != null && rEnd != null) {
-                            // SINGLE
-                            val elText = str.subSequence(3,str.length -3)
-                            parents.add(Element.BlockCode(Element.BlockCode.Type.SINGLE, "$elText"))
-                        } else if (rStart != null && rEnd == null) {
-                            // START
-                            val elText = str.subSequence(3,str.length)
-                            parents.add(Element.BlockCode(Element.BlockCode.Type.START, "$elText\n"))
-                        } else if (rStart == null && rEnd != null) {
-                            // END
-                            val elText = str.subSequence(0,str.length -3)
-                            parents.add(Element.BlockCode(Element.BlockCode.Type.END, "$elText"))
-                        } else {
-                            // MIDDLE
-                            parents.add(Element.BlockCode(text = "$str\n"))
+                    val fullText = string.subSequence(startIndex.plus(3), endIndex.plus(-3)).toString()
+
+                    if (fullText.contains(LINE_SEPARATOR)) {
+                        for ((index, line) in fullText.lines().withIndex()) {
+                            when (index) {
+                                fullText.lines().lastIndex -> parents.add(
+                                    Element.BlockCode(
+                                        Element.BlockCode.Type.END,
+                                        line
+                                    )
+                                )
+                                0 -> parents.add(
+                                    Element.BlockCode(
+                                        Element.BlockCode.Type.START,
+                                        line + LINE_SEPARATOR
+                                    )
+                                )
+                                else -> parents.add(
+                                    Element.BlockCode(
+                                        Element.BlockCode.Type.MIDDLE,
+                                        line + LINE_SEPARATOR
+                                    )
+                                )
+                            }
                         }
-                    }
+                    } else parents.add(Element.BlockCode(Element.BlockCode.Type.SINGLE, fullText))
 
                    lastStartIndex = endIndex
                 }
