@@ -13,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
-import ru.skillbranch.skillarticles.markdown.spans.*
+import ru.skillbranch.skillarticles.ui.custom.spans.*
 
 
 /**
@@ -352,7 +352,7 @@ class SkillBranchHomeTask_5_InstrumentedTest {
 
         val text = SpannableString("text")
 
-        val span = IconLinkSpan(linkDrawable, iconColor, padding, textColor)
+        val span = IconLinkSpan(linkDrawable, padding, textColor)
         text.setSpan(span, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         span.path = path
 

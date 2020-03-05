@@ -3,8 +3,8 @@ package ru.skillbranch.skillarticles
 import junit.framework.Assert.assertEquals
 import org.junit.Assert
 import org.junit.Test
-import ru.skillbranch.skillarticles.markdown.Element
-import ru.skillbranch.skillarticles.markdown.MarkdownParser
+import ru.skillbranch.skillarticles.data.repositories.Element
+import ru.skillbranch.skillarticles.data.repositories.MarkdownParser
 
 class MarkdownParserTest {
 
@@ -193,7 +193,7 @@ class MarkdownParserTest {
         return elements
     }
 
-    private inline fun <reified T:Element> prepare(list: List<Element>):List<String> {
+    private inline fun <reified T: Element> prepare(list: List<Element>):List<String> {
         return list
             .fold(mutableListOf<Element>()) { acc, el ->
                 // spread inner elements

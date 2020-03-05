@@ -14,11 +14,8 @@ import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
 import android.graphics.drawable.VectorDrawable
-import androidx.annotation.ColorInt
-import androidx.annotation.Px
-import ru.skillbranch.skillarticles.markdown.spans.*
+import ru.skillbranch.skillarticles.ui.custom.spans.*
 
 
 /**
@@ -369,7 +366,7 @@ class InstrumentedTestHometask5 {
 
         val text = SpannableString("text")
 
-        val span = IconLinkSpan(linkDrawable, iconColor,padding,textColor)
+        val span = IconLinkSpan(linkDrawable,padding,textColor)
         text.setSpan(span, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         span.path = path
 

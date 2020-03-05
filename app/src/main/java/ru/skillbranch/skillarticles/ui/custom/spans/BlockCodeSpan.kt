@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles.markdown.spans
+package ru.skillbranch.skillarticles.ui.custom.spans
 
 import android.graphics.*
 import android.text.Layout
@@ -8,7 +8,7 @@ import android.text.style.ReplacementSpan
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.annotation.VisibleForTesting
-import ru.skillbranch.skillarticles.markdown.Element
+import ru.skillbranch.skillarticles.data.repositories.Element
 
 
 class BlockCodeSpan(
