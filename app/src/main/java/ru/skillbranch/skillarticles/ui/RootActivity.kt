@@ -45,9 +45,6 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override val binding: ArticleBinding by lazy { ArticleBinding() }
 
-    val bgColor by AttrValue(R.attr.colorSecondary)
-    val fgColor by AttrValue(R.attr.colorOnSecondary)
-
     inner class ArticleBinding : Binding() {
 
         var isFocusedSearch:Boolean = false
@@ -168,10 +165,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
 
         searchResult.forEach { (start, end) ->
             content.setSpan(
-                SearchSpan(
-                    bgColor,
-                    fgColor
-                ),
+                SearchSpan(),
                 start,
                 end,
                 SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -199,10 +193,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             if(content.getSpanStart(result) > 0 ) {
                 Selection.setSelection(content, content.getSpanStart(result))
                 content.setSpan(
-                    SearchFocusSpan(
-                        bgColor,
-                        fgColor
-                    ),
+                    SearchFocusSpan(),
                     content.getSpanStart(result),
                     content.getSpanEnd(result),
                     SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
