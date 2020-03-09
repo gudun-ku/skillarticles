@@ -24,6 +24,7 @@ import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 import ru.skillbranch.skillarticles.R
+import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
 import ru.skillbranch.skillarticles.extensions.setMarginOptionally
 import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownBuilder
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
@@ -89,14 +90,9 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
         private var searchResults: List<Pair<Int, Int>> by ObserveProp(emptyList())
         private var searchPosition: Int by ObserveProp(0)
 
-        private var content: String by ObserveProp("loading") {
-            MarkdownBuilder(this@RootActivity)
-                .markdownToSpan(it)
-                .run {
-                    tv_text_content.setText(this, TextView.BufferType.SPANNABLE)
-                }
-            //tv_text_content.movementMethod = ScrollingMovementMethod()
-            tv_text_content.movementMethod = LinkMovementMethod.getInstance()
+        private var content: List<MarkdownElement> by ObserveProp(emptyList()) {
+           tv_text_content.isLoading = it.isEmpty()
+           tv_text_content.setContent(it)
         }
 
         override fun onFinishInflate() {
@@ -130,7 +126,7 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
             if (data.title != null) title = data.title
             if (data.category !=null) category = data.category
             if (data.categoryIcon != null) categoryIcon = data.categoryIcon as Int
-            if (data.content != null ) content = data.content
+            content = data.content
 
             isLoadingContent = data.isLoadingContent
             isSearch = data.isSearch
@@ -156,57 +152,57 @@ class RootActivity : BaseActivity<ArticleViewModel>(), IArticleView {
     }
 
     override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
-        val content = tv_text_content.text as Spannable
-
-        // clear entry search result
-        clearSearchResult()
-
-        //content.clearSpans()
-
-        searchResult.forEach { (start, end) ->
-            content.setSpan(
-                SearchSpan(),
-                start,
-                end,
-                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-
-        // scroll to first found element
-        renderSearchPosition(0)
+//        val content = tv_text_content.text as Spannable
+//
+//        // clear entry search result
+//        clearSearchResult()
+//
+//        //content.clearSpans()
+//
+//        searchResult.forEach { (start, end) ->
+//            content.setSpan(
+//                SearchSpan(),
+//                start,
+//                end,
+//                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+//            )
+//        }
+//
+//        // scroll to first found element
+//        renderSearchPosition(0)
     }
 
     override fun renderSearchPosition(searchPosition: Int) {
-        val content = tv_text_content.text as Spannable
-
-        val spans = content.getSpans<SearchSpan>()
-        // clear last search position
-        content.getSpans<SearchFocusSpan>().forEach { content.removeSpan(it) }
-
-        if(spans.isNotEmpty()) {
-            // find position span
-            if (searchPosition >= spans.size || searchPosition < 0)
-                return
-
-            val result = spans[searchPosition]
-
-            if(content.getSpanStart(result) > 0 ) {
-                Selection.setSelection(content, content.getSpanStart(result))
-                content.setSpan(
-                    SearchFocusSpan(),
-                    content.getSpanStart(result),
-                    content.getSpanEnd(result),
-                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-        }
+//        val content = tv_text_content.text as Spannable
+//
+//        val spans = content.getSpans<SearchSpan>()
+//        // clear last search position
+//        content.getSpans<SearchFocusSpan>().forEach { content.removeSpan(it) }
+//
+//        if(spans.isNotEmpty()) {
+//            // find position span
+//            if (searchPosition >= spans.size || searchPosition < 0)
+//                return
+//
+//            val result = spans[searchPosition]
+//
+//            if(content.getSpanStart(result) > 0 ) {
+//                Selection.setSelection(content, content.getSpanStart(result))
+//                content.setSpan(
+//                    SearchFocusSpan(),
+//                    content.getSpanStart(result),
+//                    content.getSpanEnd(result),
+//                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+//                )
+//            }
+//        }
 
     }
 
     override fun clearSearchResult() {
-       val content = tv_text_content.text as Spannable
-       content.getSpans<SearchSpan>()
-           .forEach { content.removeSpan(it) }
+//       val content = tv_text_content.text as Spannable
+//       content.getSpans<SearchSpan>()
+//           .forEach { content.removeSpan(it) }
     }
 
     override fun showSearchBar() {

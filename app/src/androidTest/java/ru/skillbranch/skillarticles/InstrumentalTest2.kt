@@ -10,7 +10,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import ru.skillbranch.skillarticles.data.repositories.Element
-import ru.skillbranch.skillarticles.ui.custom.spans.BlockCodeSpan
 import ru.skillbranch.skillarticles.ui.custom.spans.OrderedListSpan
 
 

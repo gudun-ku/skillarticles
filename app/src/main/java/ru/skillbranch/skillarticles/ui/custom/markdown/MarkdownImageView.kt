@@ -90,9 +90,7 @@ class MarkdownImageView private constructor(
         }
         addView(iv_image)
 
-        tv_title = MarkdownTextView(context).apply {
-            // TODO setting text view
-            setText("Title", TextView.BufferType.SPANNABLE)
+        tv_title = MarkdownTextView(context, fontSize * 0.75f).apply {
             setTextColor(colorOnBackground)
             gravity = Gravity.CENTER
             typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
@@ -105,7 +103,7 @@ class MarkdownImageView private constructor(
         context: Context,
         fontSize: Float,
         url: String,
-        title: String,
+        title: CharSequence,
         alt: String?
     ): this(context, fontSize) {
         imageUrl = url
@@ -171,10 +169,15 @@ class MarkdownImageView private constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var usedHeight = 0
         val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
-        measureChild(iv_image, widthMeasureSpec, heightMeasureSpec)
-        measureChild(tv_title, widthMeasureSpec, heightMeasureSpec)
 
-        if (tv_alt != null) measureChild(tv_alt, widthMeasureSpec, heightMeasureSpec)
+        // create measureSpec for children EXACTLY despite default WRAP_CONTENT
+        // all children width = parent width (constraint parent width)
+        val ms = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+
+        iv_image.measure(ms, heightMeasureSpec)
+        tv_title.measure(ms, heightMeasureSpec)
+
+        if (tv_alt != null) tv_alt?.measure(ms, heightMeasureSpec)
 
         usedHeight += iv_image.measuredHeight
         usedHeight += titleTopMargin
@@ -268,4 +271,6 @@ class AspectRationResizeTransform: BitmapTransformation() {
     override fun equals(other: Any?): Boolean = other is AspectRationResizeTransform
 
     override fun hashCode(): Int = ID.hashCode()
+
+
 }
