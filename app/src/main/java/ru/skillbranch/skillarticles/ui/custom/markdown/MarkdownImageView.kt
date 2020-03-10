@@ -72,6 +72,8 @@ class MarkdownImageView private constructor(
     }
 
     init {
+        //setBackgroundColor(Color.RED)
+
         layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         iv_image = ImageView(context).apply {
             // TODO settings image view

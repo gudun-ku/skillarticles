@@ -1,7 +1,6 @@
 package ru.skillbranch.skillarticles.ui.custom.markdown
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ class MarkdownContentView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
-    lateinit var elements: List<MarkdownElement>
+    private lateinit var elements: List<MarkdownElement>
     private val children: MutableList<View> = mutableListOf()
 
     // for restore
@@ -29,7 +28,9 @@ class MarkdownContentView @JvmOverloads constructor(
             it.fontSize = value
         }
     }
+
     var isLoading: Boolean = true
+    val padding = context.dpToIntPx(8)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var usedHeight = paddingTop
@@ -48,7 +49,7 @@ class MarkdownContentView @JvmOverloads constructor(
         var usedHeight = paddingTop
         val bodyWidth = right - left - paddingLeft - paddingRight
         val left = paddingLeft
-        val right = paddingRight + bodyWidth
+        val right = paddingLeft + bodyWidth
 
         children.forEach {
             if (it is MarkdownTextView) {
@@ -62,7 +63,7 @@ class MarkdownContentView @JvmOverloads constructor(
                 it.layout(
                     left,
                     usedHeight,
-                    r,
+                    right,
                     usedHeight + it.measuredHeight
                 )
             }
@@ -76,14 +77,13 @@ class MarkdownContentView @JvmOverloads constructor(
             when (it) {
                 is MarkdownElement.Text -> {
                     val tv = MarkdownTextView(context, textSize).apply {
-                        //setPaddingOptionally(left = context.dpToIntPx(8), right = context.dpToIntPx(8))
-                        setLineSpacing(fontSize*0.5f, 1f)
+                        setPaddingOptionally(left = padding, right = padding)
+                        setLineSpacing(fontSize * 0.5f, 1f)
                     }
 
                     MarkdownBuilder(context)
                         .markdownToSpan(it)
                         .run {
-                            tv.color = Color.BLACK
                             tv.setText(this, TextView.BufferType.SPANNABLE)
                         }
 
@@ -102,13 +102,67 @@ class MarkdownContentView @JvmOverloads constructor(
                 }
 
                 is MarkdownElement.Scroll -> {
-                    // TODO implement me
+//                    val sv = MarkdownCodeView(
+//                        context,
+//                        textSize,
+//                        it.blockCode.text
+//                    )
+//
+//                    addView(sv)
                 }
             }
         }
     }
 
     fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
-        // TODO implement me
+        children.forEach {view ->
+            view as IMarkdownView
+            view.clearSearchResult()
+        }
+
+        if(searchResult.isEmpty()) return
+
+        val bounds = elements.map { it.bounds }
+        val result = searchResult.groupByBounds(bounds)
+
+        children.forEachIndexed { index, view ->
+            view as IMarkdownView
+            // search for child view with markdown element offset
+            view.renderSearchResult(result[index], elements[index].offset)
+        }
+
     }
+
+    fun renderSearchPosition(
+        searchPosition: Pair<Int, Int>?,
+        force: Boolean = false
+    ) {
+        searchPosition ?: return
+        val bounds = elements.map { it.bounds }
+        val index = bounds.indexOfFirst { (start, end) ->
+            val boundRange = start..end
+            val (startPos, endPos) = searchPosition
+            startPos in boundRange && endPos in boundRange
+        }
+
+        if (index == -1) return
+        val view = getChildAt(index)
+        view as IMarkdownView
+        view.renderSearchPosition(searchPosition, elements[index].offset)
+    }
+
+
+    fun clearSearchResult() {
+        children.forEach { view ->
+            view as IMarkdownView
+            view.clearSearchResult()
+        }
+    }
+}
+
+
+
+private fun List<Pair<Int,Int>>.groupByBounds(bounds: List<Pair<Int,Int>>): List<List<Pair<Int, Int>>> {
+    return emptyList()
+    // TODO
 }

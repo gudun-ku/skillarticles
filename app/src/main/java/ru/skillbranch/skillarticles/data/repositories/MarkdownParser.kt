@@ -17,7 +17,7 @@ object MarkdownParser {
     private const val INLINE_GROUP = "((?<!`)`[^`\\s].*?[^`\\s]?`(?!`))"
     private const val LINK_GROUP = "(\\[[^\\[\\]]*?]\\(.+?\\)|^[*?]\\(.*?\\))"
     private const val ORDERED_LIST_ITEM_GROUP = "(^\\d+\\. .+\$)"
-    private const val MULTILINE_CODE_GROUP = "((?<!`)`{3}[^`\\s](.|\\n|\\r\\n)*?[^`\\s]?`{3}(?!`))"
+    private const val BLOCK_CODE_GROUP = "(^```[\\s\\S]+?```$)"
     private const val IMAGE_GROUP = "(^!\\[[^\\[\\]]*?\\]\\(.*?\\)$)"
 
 
@@ -25,7 +25,7 @@ object MarkdownParser {
     private const val MARKDOWN_GROUPS = "$UNORDERED_LIST_ITEM_GROUP|$HEADER_GROUP|$QUOTE_GROUP" +
                                         "|$ITALIC_GROUP|$BOLD_GROUP|$STRIKE_GROUP|$RULE_GROUP" +
                                         "|$INLINE_GROUP|$LINK_GROUP|$ORDERED_LIST_ITEM_GROUP" +
-                                        "|$MULTILINE_CODE_GROUP|$IMAGE_GROUP"
+                                        "|$BLOCK_CODE_GROUP|$IMAGE_GROUP"
 
     private val elementsPattern by lazy {
         Pattern.compile(MARKDOWN_GROUPS, Pattern.MULTILINE)
@@ -51,49 +51,6 @@ object MarkdownParser {
             acc
         }
     }
-
-    /**
-     * clear markdown text to string without markdown characters
-     */
-
-//    fun clear(string: String?) : String? {
-//        if (string.isNullOrEmpty()) return null
-//
-//        val mdText =
-//            parse(
-//                string
-//            )
-//        if (string.isNullOrEmpty()) return null
-//        var resultString = ""
-//        val textList = mdText.elements.fold(mutableListOf<Element>()){ acc, el -> //spread inner elements
-//            acc.also { it.addAll(el.spread()) }
-//        }
-//            .map { it.text.toString() }
-//
-//        textList.forEach {
-//               resultString += it
-//            }
-//
-//        return resultString
-//    }
-
-//    private fun Element.spread():List<Element>{
-//        val elements = mutableListOf<Element>()
-//        if (this.elements.isEmpty()) {
-//            elements.add(this)
-//        } else {
-//            elements.addAll(this.elements.spread())
-//        }
-//        return elements
-//    }
-//
-//    private fun List<Element>.spread():List<Element>{
-//        val elements = mutableListOf<Element>()
-//        if(this.isNotEmpty()) elements.addAll(
-//            this.fold(mutableListOf()){acc, el -> acc.also { it.addAll(el.spread()) }}
-//        )
-//        return elements
-//    }
 
      /**
      * find markdown elements in markdown text
@@ -121,7 +78,7 @@ object MarkdownParser {
 
             // groups range info
 
-            val groups = 1..11
+            val groups = 1..12
 
             // every group
             var group = -1
@@ -299,7 +256,7 @@ object MarkdownParser {
                     lastStartIndex = endIndex
                 }
 
-                // MULTILINE CODE BLOCK
+                // BLOCK CODE
                 11 -> {
                     text = string.subSequence(startIndex.plus(3), endIndex.plus(-3)).toString()
                     val element = Element.BlockCode(text)
@@ -335,9 +292,7 @@ object MarkdownParser {
     }
 }
 
-data class MarkdownText(val elements: List<Element>)
-
-sealed class MarkdownElement() {
+sealed class MarkdownElement {
     abstract val offset: Int
     val bounds: Pair<Int, Int> by lazy {
         when(this){
@@ -453,7 +408,7 @@ private fun Element.spread() : List<Element>{
 
 private fun List<Element>.spread(): List<Element> {
     val elements = mutableListOf<Element>()
-    forEach { elements.addAll((it.spread())) }
+    forEach { elements.addAll(it.spread()) }
     return elements
 }
 

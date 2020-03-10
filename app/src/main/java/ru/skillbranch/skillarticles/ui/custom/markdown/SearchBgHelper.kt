@@ -16,8 +16,16 @@ import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
 
 class SearchBgHelper(
     context: Context,
-    private val focusListener: (Int) -> Unit
+    private val focusListener: ((Int, Int) -> Unit)? = null,
+    mockDrawable: Drawable? = null //for mock drawable
 ) {
+
+    constructor(context: Context, focusListener: ((Int, Int) -> Unit)?): this(
+        context,
+        focusListener,
+        null
+    )
+
     private val padding:Int = context.dpToIntPx(4)
     private val borderWidth: Int = context.dpToIntPx(1)
     private val radius: Float = context.dpToPx(8)
@@ -71,18 +79,8 @@ class SearchBgHelper(
     }
 
     private lateinit var render: SearchBgRender
-    private val singleLineRender: SearchBgRender by lazy {
-        SingleLineRender(padding, drawable)
-    }
-    private val multiLineRender: SearchBgRender by lazy {
-        MultiLineRender(
-            padding,
-            drawableLeft,
-            drawableMiddle,
-            drawableRight
-        )
-    }
-
+    private val singleLineRender = SingleLineRender(padding, drawable)
+    private val multiLineRender = MultiLineRender(padding, drawableLeft, drawableMiddle, drawableRight)
 
     private lateinit var spans: Array<out SearchSpan>
     private lateinit var headerSpans: Array<out HeaderSpan>
@@ -256,8 +254,5 @@ class MultiLineRender(
         drawableRight.draw(canvas)
     }
 
-
-
-    // 1:03:40
 }
 
