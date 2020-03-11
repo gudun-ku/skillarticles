@@ -40,7 +40,6 @@
             android:padding="16dp"
             android:focusable="true"
             android:clipToPadding="false"
-            android:background="@color/color_gray_light"
             android:focusableInTouchMode="true" />
     </androidx.core.widget.NestedScrollView>
     

@@ -49,7 +49,6 @@ class MarkdownTextView constructor(
             //show rect on view with animation
             requestRectangleOnScreen(focusRect, false)
         }
-        setBackgroundColor(Color.MAGENTA)
         setTextColor(color)
         textSize = fontSize
         movementMethod = LinkMovementMethod.getInstance()
@@ -63,5 +62,4 @@ class MarkdownTextView constructor(
         }
         super.onDraw(canvas)
     }
-
 }
