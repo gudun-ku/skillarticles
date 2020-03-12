@@ -8,7 +8,7 @@ import ru.skillbranch.skillarticles.ui.custom.spans.SearchFocusSpan
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
 
 interface IMarkdownView {
-    var fontSize: Float
+    val fontSize: Float
     val spannableContent: Spannable
 
     fun renderSearchResult(

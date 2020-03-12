@@ -38,14 +38,14 @@ class IconLinkSpan(
         val textStart = x + iconSize + padding
         paint.forLine {
             path.reset()
-            path.moveTo(textStart,bottom.toFloat())
+            path.moveTo(textStart, y + paint.descent())
             path.lineTo(textStart + textWidth, bottom.toFloat())
             canvas.drawPath(path, paint)
         }
 
         canvas.save()
-        val trY = bottom - linkDrawable.bounds.bottom
-        canvas.translate(x, trY.toFloat())
+        val trY = y + paint.descent() - linkDrawable.bounds.bottom
+        canvas.translate(x + padding/2, trY)
         linkDrawable.draw(canvas)
         canvas.restore()
 

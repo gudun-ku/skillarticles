@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
+import androidx.annotation.VisibleForTesting
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
@@ -45,9 +46,9 @@ class MarkdownImageView private constructor(
     lateinit var imageUrl: String
     lateinit var imageTitle: CharSequence
 
-    private val iv_image: ImageView
+    val iv_image: ImageView
     private val tv_title: MarkdownTextView
-    private var tv_alt: TextView? = null
+    var tv_alt: TextView? = null
 
     @Px
     private val titleTopMargin: Int = context.dpToIntPx(8)
@@ -168,6 +169,7 @@ class MarkdownImageView private constructor(
         va.start()
     }
 
+    @VisibleForTesting
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var usedHeight = 0
         val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
@@ -189,6 +191,7 @@ class MarkdownImageView private constructor(
         setMeasuredDimension(width, usedHeight)
     }
 
+    @VisibleForTesting
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         var usedHeight = 0
         val bodyWidth = r - l - paddingLeft - paddingRight
@@ -222,6 +225,7 @@ class MarkdownImageView private constructor(
         )
     }
 
+    @VisibleForTesting
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
 

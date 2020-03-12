@@ -1,4 +1,9 @@
 <resources>
+    <!-- global colors. -->
+    <attr name="darkSurfaceColor" format="color" />
+    <attr name="lightSurfaceColor" format="color" />
+    <attr name="darkOnSurfaceColor" format="color" />
+    <attr name="lightOnSurfaceColor" format="color" />
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
