@@ -5,7 +5,7 @@ fun List<Pair<Int,Int>>.groupByBounds(bounds: List<Pair<Int,Int>>): List<List<Pa
     bounds.forEach { (lb,hb) ->
         run {
            val insideBounds =
-               this.filter { (lbound, hbound) -> lbound <= lb && hbound >= hb }
+               this.filter { (lbound, hbound) -> lbound >= lb && hbound <= hb }
            outList.add(insideBounds)
         }
     }

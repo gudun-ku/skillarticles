@@ -21,6 +21,7 @@ import ru.skillbranch.skillarticles.data.repositories.clearContent
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.groupByBounds
 import ru.skillbranch.skillarticles.extensions.indexesOf
+import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownCodeView
 import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownImageView
 import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownTextView
 import ru.skillbranch.skillarticles.ui.custom.markdown.SearchBgHelper

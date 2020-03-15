@@ -3,7 +3,6 @@ package ru.skillbranch.skillarticles.ui.custom.markdown
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.text.Selection
@@ -22,7 +21,6 @@ import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.dpToPx
 import ru.skillbranch.skillarticles.extensions.setPaddingOptionally
-import java.lang.reflect.Type
 
 @SuppressLint("ViewConstructor")
 class MarkdownCodeView private constructor(
@@ -35,7 +33,8 @@ class MarkdownCodeView private constructor(
             field = value
         }
 
-    override val spannableContent: Spannable = SpannableString("")
+    override val spannableContent: Spannable
+        get() = tv_codeView.text as Spannable
 
     var copyListener: ((String) -> Unit)? = null
 

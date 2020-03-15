@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.text.Layout
 import android.text.Spanned
+import androidx.annotation.VisibleForTesting
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.getSpans
 import ru.skillbranch.skillarticles.R
@@ -17,10 +18,11 @@ import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
 
 class SearchBgHelper(
     context: Context,
-    private val focusListener: ((Int, Int) -> Unit),
+    private val focusListener: ((Int, Int) -> Unit)? = null,
     mockDrawable: Drawable? = null //for mock drawable
 ) {
 
+    @VisibleForTesting
     constructor(context: Context, focusListener: ((Int, Int) -> Unit)): this(
         context,
         focusListener,
@@ -80,8 +82,8 @@ class SearchBgHelper(
     }
 
     private lateinit var render: SearchBgRender
-    private val singleLineRender = SingleLineRender(padding, drawable)
-    private val multiLineRender = MultiLineRender(padding, drawableLeft, drawableMiddle, drawableRight)
+    private val singleLineRender = SingleLineRender(padding, mockDrawable ?: drawable)
+    private val multiLineRender = MultiLineRender(padding, mockDrawable ?: drawableLeft, mockDrawable ?: drawableMiddle, mockDrawable ?: drawableRight)
 
     private lateinit var spans: Array<out SearchSpan>
     private lateinit var headerSpans: Array<out HeaderSpan>
@@ -104,7 +106,7 @@ class SearchBgHelper(
             endLine = layout.getLineForOffset(spanEnd)
 
             if (it is SearchFocusSpan) {
-                focusListener.invoke(layout.getLineTop(startLine),layout.getLineBottom(startLine))
+                focusListener?.invoke(layout.getLineTop(startLine),layout.getLineBottom(startLine))
             }
 
             headerSpans = text.getSpans(spanStart, spanEnd, HeaderSpan::class.java)
@@ -112,7 +114,6 @@ class SearchBgHelper(
             bottomExtraPadding = 0
 
             if(headerSpans.isNotEmpty()) {
-                //TODO
                 topExtraPadding = if(spanStart in headerSpans[0].firstLineBounds ||
                     spanEnd in headerSpans[0].firstLineBounds) {
                     headerSpans[0].topExtraPadding
@@ -122,7 +123,6 @@ class SearchBgHelper(
                     spanEnd in headerSpans[0].lastLineBounds) {
                     headerSpans[0].bottomExtraPadding
                 } else 0
-
             }
 
             startOffset = layout.getPrimaryHorizontal(spanStart).toInt()
