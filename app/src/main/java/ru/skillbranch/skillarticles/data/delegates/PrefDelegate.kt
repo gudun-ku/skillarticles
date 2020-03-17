@@ -1,7 +1,6 @@
 package ru.skillbranch.skillarticles.data.delegates
 
 import ru.skillbranch.skillarticles.data.local.PrefManager
-import java.lang.IllegalArgumentException
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 

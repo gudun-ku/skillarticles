@@ -9,7 +9,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.text.Selection
 import android.text.Spannable
-import android.text.SpannableString
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup

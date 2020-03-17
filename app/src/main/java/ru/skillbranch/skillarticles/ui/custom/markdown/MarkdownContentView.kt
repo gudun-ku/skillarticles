@@ -1,7 +1,6 @@
 package ru.skillbranch.skillarticles.ui.custom.markdown
 
 import android.content.Context
-import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -27,12 +26,6 @@ class MarkdownContentView @JvmOverloads constructor(
 
     // for restore state
     private var ids = arrayListOf<Int>()
-
-    companion object {
-        private const val SPARSE_STATE_KEY = "SPARSE_STATE_KEY"
-        private const val SUPER_STATE_KEY = "SUPER_STATE_KEY"
-    }
-
 
     var textSize by Delegates.observable(14f) {_, old, value ->
         if (value == old) return@observable
@@ -99,9 +92,6 @@ class MarkdownContentView @JvmOverloads constructor(
                         .run {
                             tv.setText(this, TextView.BufferType.SPANNABLE)
                         }
-
-//                    tv.id = if (ids[idx] == -1) View.generateViewId() else ids[idx]
-//                    ids[idx] = tv.id
                     addView(tv)
                 }
 
@@ -113,8 +103,6 @@ class MarkdownContentView @JvmOverloads constructor(
                         it.image.text,
                         it.image.alt
                     )
-//                    iv.id = if (ids[idx] == -1) View.generateViewId() else ids[idx]
-//                    ids[idx] = iv.id
                     addView(iv)
                 }
 
@@ -124,8 +112,6 @@ class MarkdownContentView @JvmOverloads constructor(
                         textSize,
                         it.blockCode.text
                     )
-//                    sv.id = if (ids[idx] == -1) View.generateViewId() else ids[idx]
-//                    ids[idx] = sv.id
                     addView(sv)
 
                 }
