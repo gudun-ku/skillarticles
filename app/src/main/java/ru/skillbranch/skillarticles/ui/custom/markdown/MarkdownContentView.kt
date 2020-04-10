@@ -8,6 +8,8 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.util.isEmpty
+import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.core.view.size
@@ -25,7 +27,7 @@ class MarkdownContentView @JvmOverloads constructor(
     private lateinit var elements: List<MarkdownElement>
 
     // for restore state
-    private var ids = arrayListOf<Int>()
+    private var layoutManager: LayoutManager = LayoutManager()
 
     var textSize by Delegates.observable(14f) {_, old, value ->
         if (value == old) return@observable
@@ -171,63 +173,96 @@ class MarkdownContentView @JvmOverloads constructor(
     }
 
     public override fun onSaveInstanceState(): Parcelable? {
-        return SavedState(super.onSaveInstanceState()).apply {
-
-            ids = IntArray(tv_text_content.size).apply {
-                fill(-1, 0, size)
-            }.toCollection(ArrayList())
-            tv_text_content.forEachIndexed { idx, view ->
-               if (view.id < 0) view.id = View.generateViewId()
-               ids[idx] = view.id
-            }
-
-            savedIds = ids
-            childrenStates = saveChildViewStates()
-        }
+        val state = SavedState(super.onSaveInstanceState())
+        state.layout = layoutManager
+        return state
     }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
-        when (state) {
-            is SavedState -> {
-                super.onRestoreInstanceState(state.superState)
-                ids = state.savedIds
-                tv_text_content.forEachIndexed { idx, view ->
-                    if (view.id < 0) view.id = ids[idx]
-                }
+        super.onRestoreInstanceState(state)
+        if (state is SavedState) layoutManager = state.layout
 
-                state.childrenStates?.let { restoreChildViewStates(it) }
+        // TODO temp solution, move this into fragment
+        children.filter { it !is MarkdownTextView }
+            .forEachIndexed{ index, view ->
+                layoutManager.attachToParent(view, index)
             }
-            else -> super.onRestoreInstanceState(state)
+
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
+        // TODO temp solution, move this into fragment
+        layoutManager.clearAll()
+        children.filter { it !is MarkdownTextView }
+            .forEachIndexed{
+                    index, view -> layoutManager.attachToParent(view, index)
+            }
+        // save children manually without Markdown text views
+        children.filter { it !is MarkdownTextView }
+            .forEach {
+                it.saveHierarchyState(layoutManager.container)
+            }
+        // save only markdownContentView
+        dispatchFreezeSelfOnly(container)
+    }
+
+    private class LayoutManager(): Parcelable {
+        var ids: MutableList<Int> = mutableListOf()
+        var container: SparseArray<Parcelable> = SparseArray()
+
+        constructor(parcel: Parcel): this() {
+            ids = parcel.readArrayList(Int::class.java.classLoader) as ArrayList<Int>
+            container = parcel.readSparseArray<Parcelable>(this::class.java.classLoader) as SparseArray<Parcelable>
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeIntArray(ids.toIntArray())
+            parcel.writeSparseArray(container)
+        }
+
+        fun attachToParent(view: View, index: Int){
+            if(container.isEmpty()) {
+                view.id = View.generateViewId()
+                ids.add(view.id)
+            } else {
+                view.id = ids[index]
+                view.restoreHierarchyState(container)
+            }
+        }
+
+        fun clearAll() {
+            container.clear()
+            ids.clear()
+        }
+
+        override fun describeContents(): Int = 0
+
+        companion object CREATOR: Parcelable.Creator<LayoutManager>{
+            override fun createFromParcel(parcel: Parcel): LayoutManager = LayoutManager(parcel)
+            override fun newArray(size: Int): Array<LayoutManager?> = arrayOfNulls(size)
         }
     }
 
-    internal class SavedState : BaseSavedState {
+    private class SavedState : BaseSavedState, Parcelable {
 
-        var savedIds = arrayListOf<Int>()
-
-        var childrenStates: SparseArray<Parcelable>? = null
+        lateinit var layout: LayoutManager
 
         constructor(superState: Parcelable?) : super(superState)
 
         constructor(src: Parcel) : super(src) {
-            val idsArray = intArrayOf()
-            src.readIntArray(idsArray)
-            savedIds = idsArray.toCollection(ArrayList())
-            childrenStates = src.readSparseArray(javaClass.classLoader)
+            layout = src.readParcelable(LayoutManager::class.java.classLoader)!!
         }
 
         override fun writeToParcel(dst: Parcel, flags: Int) {
             super.writeToParcel(dst, flags)
-            dst.writeIntArray(savedIds.toIntArray())
-            dst.writeSparseArray(childrenStates as SparseArray<Any>)
+            dst.writeParcelable(layout, flags)
         }
 
-        companion object {
-            @JvmField
-            val CREATOR = object : Parcelable.Creator<SavedState> {
-                override fun createFromParcel(source: Parcel) = SavedState(source)
-                override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
-            }
+        override fun describeContents() = 0
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(parcel: Parcel) = SavedState(parcel)
+            override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
         }
     }
 

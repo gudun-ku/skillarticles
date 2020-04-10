@@ -236,12 +236,20 @@ class MarkdownCodeView private constructor(
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
+        super.onRestoreInstanceState(state)
         if (state is SavedState) {
             isDark = state.ssIsDark
             isManual = state.ssIsManual
             applyColors()
         }
-        super.onRestoreInstanceState(state)
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
+        dispatchFreezeSelfOnly(container)
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>) {
+        dispatchThawSelfOnly(container)
     }
 
     private class SavedState : BaseSavedState, Parcelable {
@@ -269,14 +277,4 @@ class MarkdownCodeView private constructor(
             override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
         }
     }
-
-
-    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>) {
-        dispatchFreezeSelfOnly(container)
-    }
-
-    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>) {
-        dispatchThawSelfOnly(container)
-    }
-
 }
