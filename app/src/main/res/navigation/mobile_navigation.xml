@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/page_article">
+
+    <fragment
+        android:id="@+id/page_article"
+        android:name="ru.skillbranch.skillarticles.ui.article.ArticleFragment"
+        android:label="ArticleFragment" />
+    <fragment
+        android:id="@+id/nav_articles"
+        android:name="ru.skillbranch.skillarticles.ui.articles.ArticlesFragment"
+        android:label="@string/label_navbar_articles"
+        tools:layout="@layout/fragment_articles" />
+    <fragment
+        android:id="@+id/nav_bookmarks"
+        android:name="ru.skillbranch.skillarticles.ui.bookmarks.BookmarksFragment"
+        android:label="@string/label_navbar_bookmarks"
+        tools:layout="@layout/fragment_bookmarks" />
+    <fragment
+        android:id="@+id/nav_transcriptions"
+        android:name="ru.skillbranch.skillarticles.ui.transcriptions.TranscriptionsFragment"
+        android:label="@string/label_navbar_transcriptions"
+        tools:layout="@layout/fragment_transcriptions" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="ru.skillbranch.skillarticles.ui.profile.ProfileFragment"
+        android:label="@string/label_navbar_profile"
+        tools:layout="@layout/fragment_profile" />
+
+</navigation>

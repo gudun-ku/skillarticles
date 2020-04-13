@@ -3,7 +3,6 @@ package ru.skillbranch.skillarticles
 import android.text.Spannable
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.text.getSpans
 import androidx.core.view.marginBottom
 import androidx.core.widget.NestedScrollView
@@ -29,7 +28,7 @@ import ru.skillbranch.skillarticles.extensions.setMarginOptionally
 import ru.skillbranch.skillarticles.ui.RootActivity
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchFocusSpan
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
-import ru.skillbranch.skillarticles.viewmodels.ArticleState
+import ru.skillbranch.skillarticles.viewmodels.article.ArticleState
 import java.lang.Thread.sleep
 
 
@@ -113,16 +112,17 @@ class ExampleInstrumentedTest {
     @Test
     fun module4() {
         val scenario = ActivityScenario.launch(RootActivity::class.java)
-        var expectedData = ArticleState(
-            isShowMenu = true,
-            isBigText = true,
-            isLoadingContent = false,
-            //content = "test content",
-            isLike = true,
-            isBookmark = true,
-            title = "test title",
-            category = "test category"
-        )
+        var expectedData =
+            ArticleState(
+                isShowMenu = true,
+                isBigText = true,
+                isLoadingContent = false,
+                //content = "test content",
+                isLike = true,
+                isBookmark = true,
+                title = "test title",
+                category = "test category"
+            )
 
         scenario.onActivity { activity ->
             activity.binding.bind(expectedData)

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_standard_16">16dp</dimen>
+    <dimen name="padding_wide_16">16dp</dimen>
+    <dimen name="text_quite_small">12sp</dimen>
+    <dimen name="icon_size_40">40dp</dimen>
+    <dimen name="poster_size_64">64dp</dimen>
+    <dimen name="text_medium_18">18sp</dimen>
+    <dimen name="margin_small_8">8dp</dimen>
+    <dimen name="margin_wide_24">24dp</dimen>
+    <dimen name="icon_size_small_16">16dp</dimen>
+    <dimen name="text_normal_14">14sp</dimen>
 </resources>
