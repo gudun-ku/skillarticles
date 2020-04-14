@@ -10,4 +10,5 @@
     <dimen name="margin_wide_24">24dp</dimen>
     <dimen name="icon_size_small_16">16dp</dimen>
     <dimen name="text_normal_14">14sp</dimen>
+    <dimen name="text_big_24">24sp</dimen>
 </resources>

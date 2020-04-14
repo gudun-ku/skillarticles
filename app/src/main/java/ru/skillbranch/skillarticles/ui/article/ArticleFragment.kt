@@ -15,6 +15,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions.circleCropTransform
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_root.*
 import kotlinx.android.synthetic.main.fragment_article.*
@@ -24,6 +29,7 @@ import kotlinx.android.synthetic.main.layout_submenu.*
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
+import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.hideKeyboard
 import ru.skillbranch.skillarticles.ui.base.BaseFragment
 import ru.skillbranch.skillarticles.ui.base.Binding
@@ -35,6 +41,7 @@ import ru.skillbranch.skillarticles.viewmodels.base.ViewModelFactory
 
 class ArticleFragment : BaseFragment<ArticleViewModel>(), IArticleView{
 
+    private val args: ArticleFragmentArgs by navArgs()
     override val viewModel: ArticleViewModel by viewModels {
         ViewModelFactory(
             owner = this,
@@ -161,16 +168,35 @@ class ArticleFragment : BaseFragment<ArticleViewModel>(), IArticleView{
     override fun setupViews() {
         setupBottombar()
         setupSubmenu()
+
+        // init views
+        val avatarSize = root.dpToIntPx(40)
+        val cornerRadius = root.dpToIntPx(8)
+
+        Glide.with(root)
+            .load(args.authorAvatar)
+            .apply(circleCropTransform())
+            .override(avatarSize)
+            .into(iv_author_avatar)
+
+        Glide.with(root)
+            .load(args.poster)
+            .transform(CenterCrop(),RoundedCorners(cornerRadius))
+            .into(iv_poster)
+
+        tv_title.text = args.title
+        tv_author.text = args.author
+        tv_date.text = args.date.format()
     }
 
     override fun showSearchBar() {
-    //        bottombar.setSearchState(true)
-    //        scroll.setMarginOptionally(bottom = dpToIntPx(56))
+    //   bottombar.setSearchState(true)
+    //   scroll.setMarginOptionally(bottom = dpToIntPx(56))
     }
 
     override fun hideSearchBar() {
-    //        bottombar.setSearchState(false)
-    //        scroll.setMarginOptionally(bottom = dpToIntPx(0))
+    //   bottombar.setSearchState(false)
+    //   scroll.setMarginOptionally(bottom = dpToIntPx(0))
     }
 
     private fun setupCopyListener() {

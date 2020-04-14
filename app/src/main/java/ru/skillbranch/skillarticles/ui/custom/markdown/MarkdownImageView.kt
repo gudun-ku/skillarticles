@@ -340,7 +340,7 @@ class AspectRationResizeTransform(): BitmapTransformation() {
         return Bitmap.createScaledBitmap(
             toTransform,
             outWidth,
-            (outWidth / aspectRatio.toInt()),
+            (outWidth / aspectRatio).toInt(),
             true
         )
 

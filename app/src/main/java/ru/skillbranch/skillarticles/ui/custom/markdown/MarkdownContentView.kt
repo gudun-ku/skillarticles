@@ -81,7 +81,8 @@ class MarkdownContentView @JvmOverloads constructor(
 
     fun setContent(content: List<MarkdownElement>) {
         elements = content
-        content.forEachIndexed { idx, it ->
+        var index = 0
+        content.forEach{ it ->
             when (it) {
                 is MarkdownElement.Text -> {
                     val tv = MarkdownTextView(context, textSize).apply {
@@ -106,6 +107,8 @@ class MarkdownContentView @JvmOverloads constructor(
                         it.image.alt
                     )
                     addView(iv)
+                    layoutManager.attachToParent(iv, index)
+                    index++
                 }
 
                 is MarkdownElement.Scroll -> {
@@ -115,6 +118,8 @@ class MarkdownContentView @JvmOverloads constructor(
                         it.blockCode.text
                     )
                     addView(sv)
+                    layoutManager.attachToParent(sv, index)
+                    index++
 
                 }
             }
@@ -191,12 +196,6 @@ class MarkdownContentView @JvmOverloads constructor(
     }
 
     override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
-        // TODO temp solution, move this into fragment
-        layoutManager.clearAll()
-        children.filter { it !is MarkdownTextView }
-            .forEachIndexed{
-                    index, view -> layoutManager.attachToParent(view, index)
-            }
         // save children manually without Markdown text views
         children.filter { it !is MarkdownTextView }
             .forEach {

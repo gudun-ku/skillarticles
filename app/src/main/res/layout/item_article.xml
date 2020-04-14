@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="@dimen/padding_wide_16">
 
     <TextView
@@ -64,7 +64,7 @@
         android:layout_width="@dimen/poster_size_64"
         android:layout_height="@dimen/poster_size_64"
         android:layout_marginTop="@dimen/margin_small_8"
-        android:layout_marginBottom="@dimen/margin_small_8"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@id/barrier_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier_top"
@@ -91,16 +91,15 @@
 
     <TextView
         android:id="@+id/tv_description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="не контент, а дополнительное описание для основного заголовка"
+        android:layout_marginTop="8dp"
         android:textColor="@color/color_gray"
         android:textSize="@dimen/text_normal_14"
-        app:layout_constraintTop_toBottomOf="@id/barrier_bottom"
+        tools:text="не контент, а дополнительное описание для основного заголовка"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.531"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="100dp" />
+        app:layout_constraintTop_toBottomOf="@id/iv_category" />
 
     <ImageView
         android:id="@+id/iv_likes"
