@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -31,6 +32,7 @@ import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.hideKeyboard
+import ru.skillbranch.skillarticles.ui.base.BaseActivity
 import ru.skillbranch.skillarticles.ui.base.BaseFragment
 import ru.skillbranch.skillarticles.ui.base.Binding
 import ru.skillbranch.skillarticles.ui.delegates.RenderProp
@@ -45,15 +47,33 @@ class ArticleFragment : BaseFragment<ArticleViewModel>(), IArticleView{
     override val viewModel: ArticleViewModel by viewModels {
         ViewModelFactory(
             owner = this,
-            params = "0"
+            params = args.articleId ?: "0"
         )
     }
 
     override val layout: Int = R.layout.fragment_article
-
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    public override val binding: ArticleBinding by lazy { ArticleBinding() }
+    override val binding: ArticleBinding by lazy { ArticleBinding() }
+    override val prepareToolbar: (BaseActivity.ToolbarBuilder.() -> Unit)? = {
+        setTitle(args.title)
+        setSubtitle(args.category)
+        setLogo(args.categoryIcon)
 
+        addMenuItem(
+            BaseActivity.MenuItemHolder(
+                "search",
+                R.id.action_search,
+                R.drawable.ic_search_black_24dp,
+                R.layout.layout_search_view
+            )
+        )
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     inner class ArticleBinding : Binding() {
 
