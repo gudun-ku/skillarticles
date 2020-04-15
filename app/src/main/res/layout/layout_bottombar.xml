@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ru.skillbranch.skillarticles.ui.custom.Bottombar
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
-
+    android:id="@+id/bottombar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:layout_gravity="bottom"
+    android:theme="@style/ArticleBarsTheme"
+    android:elevation="4dp"
+    app:layout_insetEdge="bottom"
+    >
 
         <ru.skillbranch.skillarticles.ui.custom.CheckableImageView
             android:id="@+id/btn_like"
@@ -108,5 +116,4 @@
 
     </LinearLayout>
 
-
-</merge>
+</ru.skillbranch.skillarticles.ui.custom.Bottombar>

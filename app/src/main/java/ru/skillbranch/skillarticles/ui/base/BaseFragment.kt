@@ -3,6 +3,7 @@ package ru.skillbranch.skillarticles.ui.base
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.activity_root.*
 import ru.skillbranch.skillarticles.ui.RootActivity
 import ru.skillbranch.skillarticles.viewmodels.base.BaseViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
@@ -17,6 +18,9 @@ abstract class BaseFragment<T: BaseViewModel<out IViewModelState>> : Fragment() 
 
     open val prepareToolbar: (BaseActivity.ToolbarBuilder.() -> Unit)? = null
     open val prepareBottombar: (BaseActivity.BottombarBuilder.() -> Unit)? = null
+
+    val toolbar
+        get() = root.toolbar
 
     // set listeners, tuning views
     abstract fun setupViews()
