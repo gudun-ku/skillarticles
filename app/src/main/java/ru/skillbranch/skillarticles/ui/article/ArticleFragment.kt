@@ -10,6 +10,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -28,6 +29,7 @@ import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.hideKeyboard
 import ru.skillbranch.skillarticles.extensions.setMarginOptionally
+import ru.skillbranch.skillarticles.ui.auth.AuthFragmentDirections
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
 import ru.skillbranch.skillarticles.ui.base.BaseFragment
 import ru.skillbranch.skillarticles.ui.base.Binding
@@ -206,6 +208,13 @@ class ArticleFragment : BaseFragment<ArticleViewModel>(), IArticleView{
         tv_title.text = args.title
         tv_author.text = args.author
         tv_date.text = args.date.format()
+        et_comment.setOnEditorActionListener { view, _, _ ->
+            root.hideKeyboard(view)
+            //viewModel.handleSendComment()
+            val action = AuthFragmentDirections.startLogin()
+            findNavController().navigate(action)
+            true
+        }
     }
 
     override fun showSearchBar() {

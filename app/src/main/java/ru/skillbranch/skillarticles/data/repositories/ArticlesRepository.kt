@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles.ui.articles
+package ru.skillbranch.skillarticles.data.repositories
 
 import androidx.lifecycle.LiveData
 import ru.skillbranch.skillarticles.data.ArticleItemData
