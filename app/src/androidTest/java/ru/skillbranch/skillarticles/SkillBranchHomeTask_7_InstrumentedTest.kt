@@ -43,7 +43,7 @@ import java.lang.Thread.sleep
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
-class InstrumentalTest1 {
+class SkillBranchHomeTask_7_InstrumentedTest {
     @get:Rule
     var activityRule: ActivityTestRule<RootActivity> = ActivityTestRule(RootActivity::class.java)
 

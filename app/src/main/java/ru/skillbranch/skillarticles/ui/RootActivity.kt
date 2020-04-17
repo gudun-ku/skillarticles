@@ -10,14 +10,16 @@ import kotlinx.android.synthetic.main.activity_root.*
 import kotlinx.android.synthetic.main.layout_bottombar.*
 import ru.skillbranch.skillarticles.viewmodels.base.Notify
 import ru.skillbranch.skillarticles.R
+import ru.skillbranch.skillarticles.extensions.selectDestination
 import ru.skillbranch.skillarticles.ui.base.BaseActivity
 import ru.skillbranch.skillarticles.viewmodels.RootViewModel
 import ru.skillbranch.skillarticles.viewmodels.base.IViewModelState
+import ru.skillbranch.skillarticles.viewmodels.base.NavigationCommand
 
 class RootActivity : BaseActivity<RootViewModel>() {
 
     override val layout: Int = R.layout.activity_root
-    override val viewModel:RootViewModel by viewModels()
+    public override val viewModel:RootViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,18 @@ class RootActivity : BaseActivity<RootViewModel>() {
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
-        nav_view.setupWithNavController(navController)
+        //nav_view.setupWithNavController(navController)
+
+        nav_view.setOnNavigationItemSelectedListener {
+            // if clicked on bottom navigation item -> navigate to destination by item id
+            viewModel.navigate(NavigationCommand.To(it.itemId))
+            true
+        }
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            // if destination changes set selected bottom navigation item
+            nav_view.selectDestination(destination)
+        }
     }
 
     override fun renderNotification(notify: Notify) {

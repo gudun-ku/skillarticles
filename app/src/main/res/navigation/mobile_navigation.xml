@@ -59,32 +59,37 @@
         android:label="@string/label_navbar_profile"
         tools:layout="@layout/fragment_profile" />
     <navigation
-        android:id="@+id/navigation"
-        app:startDestination="@id/nav_auth" >
+        android:id="@+id/auth"
+        android:label="@string/label_authorization"
+        app:startDestination="@id/auth" >
         <fragment
-            android:id="@+id/nav_auth"
+            android:id="@+id/auth"
             android:name="ru.skillbranch.skillarticles.ui.auth.AuthFragment"
-            android:label="fragment_auth"
+            android:label="@string/label_authorization"
             tools:layout="@layout/fragment_auth" >
             <action
                 android:id="@+id/action_authFragment_to_privacyPolicyFragment"
                 app:destination="@id/page_privacy_policy" />
+            <argument
+                android:name="private_destination"
+                app:argType="integer"
+                android:defaultValue="-1" />
         </fragment>
         <fragment
             android:id="@+id/page_privacy_policy"
             android:name="ru.skillbranch.skillarticles.ui.auth.PrivacyPolicyFragment"
-            android:label="fragment_privacy_policy"
+            android:label="@string/label_privacy_policy"
             tools:layout="@layout/fragment_privacy_policy" />
     </navigation>
 
     <!-- global actions -->
     <action
         android:id="@+id/start_login"
-        app:destination="@id/nav_auth"
+        app:destination="@id/auth"
         />
     <action
         android:id="@+id/finish_login"
-        app:popUpTo="@id/nav_auth"
+        app:popUpTo="@id/auth"
         app:popUpToInclusive="true"
         />
 

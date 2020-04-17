@@ -5,6 +5,7 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
+import androidx.navigation.NavDestination
 
 fun View.setMarginOptionally(left: Int? = null, top: Int? = null,
                              right: Int? = null, bottom: Int? = null)
@@ -38,4 +39,8 @@ fun ViewGroup.saveChildViewStates(): SparseArray<Parcelable> {
 
 fun ViewGroup.restoreChildViewStates(childViewStates: SparseArray<Parcelable>) {
     children.forEach { child -> child.restoreHierarchyState(childViewStates) }
+}
+
+fun View.selectDestination( destinatiton: NavDestination) {
+
 }
