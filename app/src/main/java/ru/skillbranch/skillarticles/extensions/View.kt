@@ -1,11 +1,14 @@
 package ru.skillbranch.skillarticles.extensions
 
 import android.os.Parcelable
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.navigation.NavDestination
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import ru.skillbranch.skillarticles.ui.custom.Bottombar
 
 fun View.setMarginOptionally(left: Int? = null, top: Int? = null,
                              right: Int? = null, bottom: Int? = null)
@@ -41,6 +44,12 @@ fun ViewGroup.restoreChildViewStates(childViewStates: SparseArray<Parcelable>) {
     children.forEach { child -> child.restoreHierarchyState(childViewStates) }
 }
 
-fun View.selectDestination( destinatiton: NavDestination) {
-
+fun View.selectDestination( destination: NavDestination) {
+    if (destination.parent?.parent == null) {
+        if (this is BottomNavigationView) {
+            menu.children
+                .filter { menuItem -> menuItem.itemId == destination.id }
+                .forEach { menuItem -> menuItem.isChecked = true }
+        }
+    }
 }
