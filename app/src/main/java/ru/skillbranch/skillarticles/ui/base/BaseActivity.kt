@@ -78,11 +78,13 @@ abstract class BaseActivity<T: BaseViewModel<out IViewModelState>>: AppCompatAct
             }
 
             is NavigationCommand.FinishLogin -> {
-                navController.navigate(R.id.finish_login, null,
-                    NavOptions.Builder()
-                        .setLaunchSingleTop(true)
-                        .setPopUpTo(navController.currentDestination!!.id, true)
-                        .build())
+                navController.navigate(R.id.finish_login
+                    ,null
+//                    , NavOptions.Builder()
+//                        .setLaunchSingleTop(true)
+//                        .setPopUpTo(navController.currentDestination!!.id, true)
+//                        .build()
+                )
                 if (command.privateDestination != null)
                     navController.navigate(
                         command.privateDestination)
@@ -98,11 +100,12 @@ abstract class BaseActivity<T: BaseViewModel<out IViewModelState>>: AppCompatAct
             is NavigationCommand.StartLogin -> {
                 navController.navigate(
                     R.id.start_login,
-                    bundleOf("private_destination" to (command.privateDestination ?: -1)),
-                    NavOptions.Builder()
-                        .setLaunchSingleTop(true)
-                            .setPopUpTo(navController.currentDestination!!.id, true)
-                            .build()
+                    bundleOf("private_destination" to (command.privateDestination ?: -1))
+//                    ,
+//                    NavOptions.Builder()
+//                        .setLaunchSingleTop(true)
+//                            .setPopUpTo(navController.currentDestination!!.id, true)
+//                            .build()
                 )
             }
         }

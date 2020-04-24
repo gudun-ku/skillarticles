@@ -43,6 +43,11 @@ class RootActivity : BaseActivity<RootViewModel>() {
         }
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            if (destination.id == R.id.nav_profile && controller.currentDestination?.id == R.id.auth) {
+                val authEntry = controller.getBackStackEntry(R.id.auth)
+
+                controller.popBackStack(R.id.nav_profile, true)
+            }
             // if destination changes set selected bottom navigation item
             nav_view.selectDestination(destination)
         }
